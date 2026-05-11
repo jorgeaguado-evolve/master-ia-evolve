@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.evolve.jeffrey.backup</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/jvalero/Desktop/JORGE/Flujos de Trabajo Agenticos/Mi Startup/execution/backup.sh</string>
+    </array>
+
+    <!-- Ejecutar todos los días a las 20:55 -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>20</integer>
+        <key>Minute</key>
+        <integer>55</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/jvalero/Desktop/JORGE/Flujos de Trabajo Agenticos/Mi Startup/.tmp/backup_launchd.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/jvalero/Desktop/JORGE/Flujos de Trabajo Agenticos/Mi Startup/.tmp/backup_error.log</string>
+
+    <!-- No ejecutar al cargar, solo a la hora programada -->
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

@@ -1,0 +1,28 @@
+{
+  "archivos_a_analizar": [
+    "CLAUDE.md",
+    "SOUL.md",
+    "IDENTITY.md",
+    "HEARTBEAT.md",
+    "memory/MEMORY.md",
+    "memory/user.md",
+    "memory/feedback_estilo.md",
+    "memory/errors.md",
+    "memory/session_log.md",
+    "memory/reference_vault.md",
+    "directives/sesion_inicio.md",
+    "directives/trim.md",
+    "skills/SKILLS.md",
+    "agents/AGENTS.md"
+  ],
+  "archivos_protegidos": [
+    "CLAUDE.md",
+    "SOUL.md",
+    "IDENTITY.md"
+  ],
+  "umbrales": {
+    "edge_cases_max_lineas": 8,
+    "tabla_max_filas": 6,
+    "ejemplo_max_lineas": 10
+  }
+}

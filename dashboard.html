@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeffrey — Dashboard de Capacidades</title>
+  <style>
+    :root {
+      --bg: #07091a;
+      --surface: #0d1230;
+      --surface2: #111830;
+      --border: #1c2850;
+      --border2: #243060;
+      --text: #c8d8ff;
+      --text-dim: #5a6fa0;
+      --text-faint: #2e3f6e;
+      --active-glow: rgba(0, 200, 255, 0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'SF Pro Display', 'Segoe UI', -apple-system, system-ui, sans-serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    #header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    #header .logo { display: flex; align-items: center; gap: 12px; }
+    #header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: #e8f0ff; }
+    #header .badge {
+      font-size: 11px; padding: 3px 9px;
+      background: rgba(0,200,255,0.12); border: 1px solid rgba(0,200,255,0.25);
+      border-radius: 20px; color: #00c8ff; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    #header .meta { font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 20px; }
+    #header .meta .dot { width: 6px; height: 6px; border-radius: 50%; background: #00e676; box-shadow: 0 0 6px #00e676; }
+
+    /* MAIN LAYOUT */
+    #main { display: flex; flex: 1; overflow: hidden; }
+
+    /* CANVAS */
+    #canvas { flex: 1; position: relative; overflow: hidden; }
+    #canvas svg { width: 100%; height: 100%; }
+
+    /* DETAIL PANEL */
+    #panel {
+      width: 300px; background: var(--surface); border-left: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    #panel-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    #panel-header .panel-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+    #panel-icon { font-size: 28px; margin-bottom: 8px; }
+    #panel-name { font-size: 18px; font-weight: 700; color: #e8f0ff; margin-bottom: 4px; }
+    #panel-subtitle { font-size: 12px; color: var(--text-dim); }
+    #panel-body { padding: 20px 22px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+    #panel-body::-webkit-scrollbar { width: 4px; }
+    #panel-body::-webkit-scrollbar-track { background: transparent; }
+    #panel-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .panel-section-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
+    #panel-description { font-size: 13px; line-height: 1.7; color: #8fa3cc; }
+    #panel-status {
+      display: inline-flex; align-items: center; gap: 7px; font-size: 12px;
+      padding: 5px 12px; border-radius: 20px;
+    }
+    #panel-status .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    #panel-capabilities { display: flex; flex-direction: column; gap: 8px; }
+    .cap-item {
+      display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .cap-item:hover { border-color: var(--border2); background: #141c3a; }
+    .cap-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .cap-name { font-size: 13px; font-weight: 500; color: #c0d0f0; margin-bottom: 2px; }
+    .cap-desc { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+    #panel-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; gap: 12px; color: var(--text-dim); text-align: center; padding: 24px;
+    }
+    #panel-empty .empty-icon { font-size: 36px; opacity: 0.3; }
+    #panel-empty p { font-size: 13px; line-height: 1.6; opacity: 0.6; }
+
+    /* LEGEND */
+    #legend {
+      position: absolute; bottom: 20px; left: 20px;
+      background: rgba(13,18,48,0.9); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px; backdrop-filter: blur(10px);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .legend-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+    .legend-item { display: flex; align-items: center; gap: 9px; font-size: 12px; color: #8090b8; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* HINT */
+    #hint { position: absolute; bottom: 20px; right: 20px; font-size: 11px; color: var(--text-faint); display: flex; flex-direction: column; gap: 5px; text-align: right; }
+
+    /* STATS BAR */
+    #stats-bar {
+      position: absolute; top: 14px; left: 14px;
+      display: flex; gap: 0; align-items: stretch;
+      background: rgba(13,18,48,0.9); border: 1px solid var(--border);
+      border-radius: 10px; backdrop-filter: blur(10px); overflow: hidden;
+    }
+    .stat-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; padding: 10px 18px; border: none; background: transparent;
+      cursor: default; transition: background 0.15s;
+      border-right: 1px solid var(--border);
+    }
+    .stat-btn:last-child { border-right: none; }
+    .stat-btn.clickable { cursor: pointer; }
+    .stat-btn.clickable:hover { background: rgba(255,255,255,0.04); }
+    .stat-btn.active-btn { background: rgba(245,158,11,0.08); }
+    .stat-btn.active-btn:hover { background: rgba(245,158,11,0.14); }
+    .stat-num { font-size: 17px; font-weight: 700; color: #e8f0ff; line-height: 1; }
+    .stat-label { font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-dim); white-space: nowrap; }
+    .stat-icon { font-size: 12px; }
+
+    /* SVG ELEMENTS */
+    .link { fill: none; stroke-width: 1.5px; pointer-events: none; }
+    .node { cursor: pointer; }
+    .node .bg-circle { transition: opacity 0.2s; }
+    .node .main-circle { stroke-width: 2px; transition: all 0.2s; }
+    .node:hover .main-circle { stroke-width: 3px; }
+    .node .label { font-size: 13px; font-weight: 600; fill: #d0e0ff; pointer-events: none; dominant-baseline: central; }
+    .node .sublabel { font-size: 10px; fill: #5a6fa0; pointer-events: none; dominant-baseline: central; }
+    .node .center-label { font-size: 16px; font-weight: 700; fill: #e8f0ff; pointer-events: none; dominant-baseline: central; text-anchor: middle; }
+    .node .center-sublabel { font-size: 11px; fill: #4a6090; pointer-events: none; dominant-baseline: central; text-anchor: middle; }
+    .node .cap-label { font-size: 11px; fill: #8090b8; pointer-events: none; dominant-baseline: central; }
+
+    /* ─── SCHEDULE MODAL ──────────────────────────────────── */
+    #schedule-modal {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    #schedule-modal.open { opacity: 1; pointer-events: all; }
+    .modal-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(7,9,26,0.75); backdrop-filter: blur(4px);
+    }
+    .modal-panel {
+      position: relative; width: 760px; max-width: calc(100vw - 48px);
+      max-height: calc(100vh - 100px);
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 16px; overflow: hidden;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      transform: translateY(16px); transition: transform 0.2s;
+    }
+    #schedule-modal.open .modal-panel { transform: translateY(0); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .modal-header h2 { font-size: 16px; font-weight: 700; color: #e8f0ff; display: flex; align-items: center; gap: 10px; }
+    .modal-header h2 .mh-badge {
+      font-size: 10px; padding: 3px 8px; border-radius: 20px;
+      background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+      color: #f59e0b; font-weight: 600; letter-spacing: 0.5px;
+    }
+    .modal-close {
+      background: none; border: none; color: var(--text-dim); cursor: pointer;
+      font-size: 18px; padding: 4px 8px; border-radius: 6px; line-height: 1;
+      transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--surface2); color: #e8f0ff; }
+    .modal-body { overflow-y: auto; flex: 1; padding: 8px 0; }
+    .modal-body::-webkit-scrollbar { width: 4px; }
+    .modal-body::-webkit-scrollbar-track { background: transparent; }
+    .modal-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    /* SCHEDULE SECTIONS */
+    .schedule-section { padding: 16px 24px 8px; }
+    .schedule-section-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .schedule-freq-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
+    }
+    .freq-daily { background: rgba(0,200,255,0.1); border: 1px solid rgba(0,200,255,0.2); color: #00c8ff; }
+    .freq-weekly { background: rgba(155,89,182,0.1); border: 1px solid rgba(155,89,182,0.25); color: #b07ad4; }
+    .freq-monthly { background: rgba(52,168,83,0.1); border: 1px solid rgba(52,168,83,0.25); color: #4aba6e; }
+    .section-count { font-size: 11px; color: var(--text-dim); }
+    .section-divider { flex: 1; height: 1px; background: var(--border); }
+
+    /* TASK CARDS */
+    .task-cards { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .task-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; transition: border-color 0.15s;
+    }
+    .task-card:hover { border-color: var(--border2); }
+    .task-card.expanded { border-color: var(--border2); }
+    .task-card-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; cursor: pointer; user-select: none;
+    }
+    .task-status-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      background: #00e676; box-shadow: 0 0 6px rgba(0,230,118,0.5);
+    }
+    .task-name { font-size: 13px; font-weight: 600; color: #c8d8ff; flex: 1; }
+    .task-agent {
+      font-size: 10px; padding: 2px 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border2);
+      color: var(--text-dim); font-family: 'SF Mono', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+    .task-next-run {
+      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .next-today { background: rgba(0,230,118,0.12); color: #00e676; border: 1px solid rgba(0,230,118,0.2); }
+    .next-soon { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+    .next-later { background: rgba(90,111,160,0.15); color: #8090b8; border: 1px solid var(--border2); }
+    .task-chevron { color: var(--text-faint); font-size: 14px; transition: transform 0.2s; flex-shrink: 0; }
+    .task-card.expanded .task-chevron { transform: rotate(90deg); }
+    .task-detail {
+      padding: 0 16px; max-height: 0; overflow: hidden;
+      transition: max-height 0.25s ease, padding 0.2s;
+    }
+    .task-card.expanded .task-detail { max-height: 200px; padding: 0 16px 14px; }
+    .task-detail-inner {
+      border-top: 1px solid var(--border); padding-top: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .task-detail-item .detail-label {
+      font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 4px;
+    }
+    .task-detail-item .detail-value { font-size: 12px; color: #8fa3cc; line-height: 1.5; }
+    .task-detail-item.full { grid-column: 1 / -1; }
+
+    .modal-footer {
+      padding: 14px 24px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    }
+    .footer-note { font-size: 11px; color: var(--text-dim); flex: 1; }
+    .footer-note strong { color: #8fa3cc; }
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <div class="logo">
+    <h1>Jeffrey</h1>
+    <span class="badge">Evolve</span>
+  </div>
+  <div class="meta">
+    <span><div class="dot"></div> Sistema activo</span>
+    <span>Dashboard de Capacidades</span>
+    <span id="current-date"></span>
+  </div>
+</div>
+
+<div id="main">
+  <div id="canvas">
+    <svg id="svg"></svg>
+    <div id="stats-bar"></div>
+    <div id="legend">
+      <div class="legend-title">Estado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00e676;box-shadow:0 0 6px #00e676"></div> Activo</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b"></div> En construccion</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#374162;border:1px dashed #4a5a82"></div> Planificado</div>
+    </div>
+    <div id="hint">
+      <span>Clic para expandir/colapsar</span>
+      <span>Scroll para hacer zoom</span>
+    </div>
+  </div>
+  <div id="panel">
+    <div id="panel-header">
+      <div class="panel-label">Detalle</div>
+      <div id="panel-icon"></div>
+      <div id="panel-name"></div>
+      <div id="panel-subtitle"></div>
+    </div>
+    <div id="panel-body">
+      <div id="panel-empty">
+        <div class="empty-icon">◎</div>
+        <p>Selecciona un modulo para ver sus capacidades y descripcion</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div id="schedule-modal">
+  <div class="modal-backdrop" onclick="closeScheduleModal()"></div>
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2>Tareas Programadas <span class="mh-badge">HEARTBEAT</span></h2>
+      <button class="modal-close" onclick="closeScheduleModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body-content"></div>
+    <div class="modal-footer">
+      <div class="footer-note">Definidas en <strong>HEARTBEAT.md</strong> — Jeffrey las ejecuta al recibir el trigger correspondiente</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA — Modulos y capacidades
+// (Actualizar con directives/dashboard.md cuando cambie el proyecto)
+// ═══════════════════════════════════════════════════════════
+const DATA = {
+  id: "root",
+  name: "Jeffrey",
+  subtitle: "Asistente de Evolve",
+  status: "active",
+  type: "root",
+  color: "#4a9eff",
+  icon: "⚡",
+  description: "Sistema agentico de gestion de operaciones para Evolve. Arquitectura DOES: Directives, Orchestration, Execution, Skills.",
+  children: [
+    {
+      id: "gmail",
+      name: "Gmail",
+      subtitle: "Email",
+      status: "active",
+      color: "#4285f4",
+      icon: "✉",
+      description: "Gestion completa del correo de Jorge. Siempre crea drafts, nunca envia directamente. Activa email_agent.",
+      children: [
+        { id: "gmail-1", name: "Redactar correo", status: "active", description: "Nuevo correo desde cero con destinatario, asunto y proposito definidos" },
+        { id: "gmail-2", name: "Responder email", status: "active", description: "Leer hilo completo y redactar respuesta contextualizada" },
+        { id: "gmail-3", name: "Revisar bandeja", status: "active", description: "Buscar, agrupar por prioridad y proponer acciones concretas" },
+        { id: "gmail-4", name: "Buscar correos", status: "active", description: "Filtros avanzados por remitente, fecha, asunto, etiqueta" },
+        { id: "gmail-5", name: "Etiquetar mensajes", status: "active", description: "Organizar correos con etiquetas de Gmail" },
+        { id: "gmail-6", name: "Crear draft", status: "active", description: "Guardar borrador para revision de Jorge antes de enviar" },
+      ]
+    },
+    {
+      id: "calendar",
+      name: "Google Calendar",
+      subtitle: "Agenda",
+      status: "active",
+      color: "#34a853",
+      icon: "📅",
+      description: "Gestion completa de la agenda. Zona horaria: Europe/Madrid. No crea eventos sin confirmacion explicita.",
+      children: [
+        { id: "cal-1", name: "Ver agenda", status: "active", description: "Consultar eventos de dia, semana o periodo personalizado" },
+        { id: "cal-2", name: "Crear evento", status: "active", description: "Nuevo evento con titulo, hora, duracion y participantes" },
+        { id: "cal-3", name: "Verificar disponibilidad", status: "active", description: "Detectar solapamientos y proponer huecos libres" },
+        { id: "cal-4", name: "Briefing diario", status: "active", description: "Resumen ejecutivo de agenda para el HEARTBEAT de manana" },
+        { id: "cal-5", name: "Proponer huecos", status: "active", description: "Sugerir horarios libres para nuevas reuniones o tareas" },
+      ]
+    },
+    {
+      id: "wiki",
+      name: "Wiki / Obsidian",
+      subtitle: "Conocimiento",
+      status: "active",
+      color: "#9b59b6",
+      icon: "📚",
+      description: "Base de conocimiento personal en Obsidian. Vault: Master Agentes IA. Jeffrey escribe, Jorge lee y dirige.",
+      children: [
+        { id: "wiki-1", name: "Ingestar fuentes", status: "active", description: "Procesar fuentes nuevas e integrarlas en el wiki via subagente delegado" },
+        { id: "wiki-2", name: "Consultar wiki", status: "active", description: "Responder preguntas usando el wiki como base de conocimiento con citas" },
+        { id: "wiki-3", name: "Lint semanal", status: "active", description: "Detectar paginas huerfanas, referencias rotas y desactualizaciones" },
+        { id: "wiki-4", name: "Crear paginas", status: "active", description: "Nuevas paginas con frontmatter YAML, wikilinks y estructura coherente" },
+        { id: "wiki-5", name: "Mantener index", status: "active", description: "Actualizar catalogo central en wiki/index.md tras cada operacion" },
+      ]
+    },
+    {
+      id: "clase",
+      name: "Clase",
+      subtitle: "Master IA",
+      status: "active",
+      color: "#e67e22",
+      icon: "🎓",
+      description: "Preparacion del modulo de agentes del master IA Generativa en Evolve. ~10 dias de clase en directo.",
+      children: [
+        { id: "clase-1", name: "Preparar sesion", status: "active", description: "Tema, objetivo, 4 bloques de ~20 min con ejemplos ejecutables" },
+        { id: "clase-2", name: "Crear ejercicios", status: "active", description: "Ejercicios practicos con resultado esperado y scaffolding minimo" },
+        { id: "clase-3", name: "Seguimiento modulo", status: "active", description: "Control de X/10 dias, temas cubiertos y ajuste de ritmo" },
+        { id: "clase-4", name: "Gestionar materiales", status: "in-progress", description: "Acceso a Google Drive del master (pendiente autenticacion MCP)" },
+      ]
+    },
+    {
+      id: "research",
+      name: "Research",
+      subtitle: "Informacion",
+      status: "active",
+      color: "#1abc9c",
+      icon: "🔍",
+      description: "Busqueda, sintesis y verificacion de informacion. Nunca inventa datos. Indica incertidumbre explicitamente.",
+      children: [
+        { id: "res-1", name: "Busqueda web", status: "active", description: "Buscar informacion tecnica en fuentes primarias contrastadas" },
+        { id: "res-2", name: "Verificar datos", status: "active", description: "Confirmar datos con fuente oficial antes de incluir en respuesta" },
+        { id: "res-3", name: "Comparar herramientas", status: "active", description: "Tabla comparativa con criterios relevantes y recomendacion clara" },
+        { id: "res-4", name: "Sintesis informativa", status: "active", description: "Resumen ejecutivo de multiples fuentes contrastadas" },
+      ]
+    },
+    {
+      id: "heartbeat",
+      name: "HEARTBEAT",
+      subtitle: "Automatizaciones",
+      status: "active",
+      color: "#f39c12",
+      icon: "⚡",
+      description: "Tareas periodicas automaticas. Diarias, semanales y mensuales. Ejecutadas al recibir el trigger HEARTBEAT.",
+      children: [
+        { id: "hb-1", name: "Briefing de manana", status: "active", description: "Agenda + emails urgentes al inicio del dia. Activa admin_agent." },
+        { id: "hb-2", name: "Resumen 20:00", status: "active", description: "Draft de resumen de jornada para iagen@evolve.es cada dia" },
+        { id: "hb-3", name: "Verificar fuentes", status: "active", description: "Revisar fuentes/ sin ingerir vs ultima entrada [ingest] en wiki/log.md" },
+        { id: "hb-4", name: "Prep semana (lunes)", status: "active", description: "Sesiones de clase de la semana y materiales que faltan" },
+        { id: "hb-5", name: "Cierre semana (viernes)", status: "active", description: "Progreso del modulo X/10 y resumen de temas cubiertos" },
+        { id: "hb-6", name: "Lint wiki (domingo)", status: "active", description: "Revision de salud del wiki e informe para el lunes" },
+        { id: "hb-7", name: "Revision mensual", status: "active", description: "% avance del master, KPIs pedagogicos y ajustes de ritmo" },
+      ]
+    },
+    {
+      id: "memoria",
+      name: "Memoria",
+      subtitle: "Sistema",
+      status: "active",
+      color: "#e74c3c",
+      icon: "🧠",
+      description: "Sistema de memoria persistente. Unica fuente de verdad: carpeta memory/. Long-term + notas diarias efimeras.",
+      children: [
+        { id: "mem-1", name: "Perfil de Jorge", status: "active", description: "Rol, objetivos, preferencias, stack de herramientas y restricciones" },
+        { id: "mem-2", name: "Feedback y estilo", status: "active", description: "Correcciones de comportamiento y preferencias de formato" },
+        { id: "mem-3", name: "Log de sesiones", status: "active", description: "Registro ligero de sesiones para detectar patrones de trabajo" },
+        { id: "mem-4", name: "Registro de errores", status: "active", description: "Tabla de errores cometidos, frecuencia y como evitarlos" },
+        { id: "mem-5", name: "Consolidacion DREAMS", status: "active", description: "Conversion semanal (domingo) de notas diarias en memoria long-term" },
+      ]
+    },
+    {
+      id: "trim",
+      name: "Trim",
+      subtitle: "Salud de archivos",
+      status: "active",
+      color: "#00bcd4",
+      icon: "✂",
+      description: "Sistema de salud de archivos base. Detecta contenido extraible, valida integridad referencial y acumula datos de uso por sesion para informar decisiones futuras.",
+      children: [
+        { id: "trim-1", name: "Analisis completo", status: "active", description: "Ejecuta trim.py: calcula tokens por seccion, aplica heuristicas y genera reporte" },
+        { id: "trim-2", name: "Solo reporte", status: "active", description: "HEARTBEAT diario: genera .tmp/trim_report.md sin modificar nada" },
+        { id: "trim-3", name: "Validacion referencial", status: "active", description: "Extrae todos los links de archivos base y verifica que los destinos existen" },
+        { id: "trim-4", name: "Tracker de uso", status: "active", description: "Registra archivos leidos al final de sesion en .tmp/trim_usage.json" },
+        { id: "trim-5", name: "Deteccion de duplicados", status: "active", description: "Detecta secciones casi identicas entre archivos y propone consolidacion" },
+      ]
+    },
+    {
+      id: "ejecucion",
+      name: "Ejecucion",
+      subtitle: "Scripts Python",
+      status: "planned",
+      color: "#546e7a",
+      icon: "🐍",
+      description: "Scripts Python deterministicos. Cada script hace una sola cosa. Pendiente de implementacion.",
+      children: [
+        { id: "exec-1", name: "Scripts Calendar", status: "planned", description: "Automatizar consultas y creacion de eventos en Google Calendar" },
+        { id: "exec-2", name: "Scripts Gmail", status: "planned", description: "Automatizar busqueda y gestion de correos via API" },
+        { id: "exec-3", name: "Scripts Wiki", status: "planned", description: "Validacion de schema y generacion automatica de index del wiki" },
+        { id: "exec-4", name: "Reportes automaticos", status: "planned", description: "Generar reportes periodicos de progreso del master y operaciones" },
+      ]
+    },
+  ]
+};
+
+// ═══════════════════════════════════════════════════════════
+// SCHEDULED TASKS — HEARTBEAT
+// (Actualizar cuando cambie HEARTBEAT.md)
+// ═══════════════════════════════════════════════════════════
+const SCHEDULED_TASKS = [
+  {
+    id: 'hb-daily-morning',
+    name: 'Briefing de inicio del dia',
+    schedule: 'daily',
+    freq: 'diario',
+    time: 'Manana',
+    cronExpr: 'daily-morning',
+    agent: 'admin_agent',
+    skill: 'calendar + email',
+    description: 'Agenda del dia + emails urgentes (filtro is:unread is:important)',
+    output: 'HOY — [fecha] / AGENDA / PENDIENTE / PARA TU ATENCION',
+    status: 'active',
+  },
+  {
+    id: 'hb-daily-night',
+    name: 'Resumen de jornada',
+    schedule: 'daily',
+    freq: 'diario',
+    time: '20:00 Madrid',
+    cronExpr: 'daily-20:00',
+    agent: 'email_agent',
+    skill: 'email',
+    description: 'Draft de correo para iagen@evolve.es con tareas completadas, decisiones tomadas y pendientes del dia',
+    output: 'Draft en Gmail: "Resumen del dia — [fecha]"',
+    status: 'active',
+  },
+  {
+    id: 'hb-daily-fuentes',
+    name: 'Verificar fuentes pendientes',
+    schedule: 'daily',
+    freq: 'diario',
+    time: 'Manana',
+    cronExpr: 'daily-morning',
+    agent: 'jeffrey',
+    skill: 'wiki',
+    description: 'Revisar si hay archivos en fuentes/ con fecha posterior al ultimo [ingest] en wiki/log.md',
+    output: 'Alerta en briefing: "Fuentes pendientes de procesar: [lista]"',
+    status: 'active',
+  },
+  {
+    id: 'hb-weekly-monday',
+    name: 'Preparacion de semana',
+    schedule: 'weekly',
+    freq: 'semanal',
+    time: 'Lunes',
+    cronExpr: 'weekly-monday',
+    agent: 'clase_agent',
+    skill: 'clase + calendar',
+    description: 'Sesiones de clase de la semana en calendario, materiales que faltan, plan de preparacion',
+    output: 'Lista de sesiones + materiales pendientes',
+    status: 'active',
+  },
+  {
+    id: 'hb-weekly-friday',
+    name: 'Cierre de semana',
+    schedule: 'weekly',
+    freq: 'semanal',
+    time: 'Viernes',
+    cronExpr: 'weekly-friday',
+    agent: 'clase_agent',
+    skill: 'clase',
+    description: 'Progreso del modulo (dias impartidos / 10), desvios de ritmo, temas cubiertos esta semana',
+    output: 'Informe semanal del modulo con % de avance',
+    status: 'active',
+  },
+  {
+    id: 'hb-weekly-sunday',
+    name: 'Lint del wiki',
+    schedule: 'weekly',
+    freq: 'semanal',
+    time: 'Domingo',
+    cronExpr: 'weekly-sunday',
+    agent: 'jeffrey',
+    skill: 'wiki',
+    description: 'Revision de salud: paginas huerfanas, referencias rotas, desactualizadas, terminos sin pagina propia',
+    output: 'Informe de salud para el briefing del lunes',
+    status: 'active',
+  },
+  {
+    id: 'hb-monthly',
+    name: 'Revision mensual del master',
+    schedule: 'monthly',
+    freq: 'mensual',
+    time: 'Fin de mes',
+    cronExpr: 'monthly',
+    agent: 'clase_agent',
+    skill: 'clase',
+    description: '% avance del master, KPIs pedagogicos: asistencia, % alumnos con primer agente, % con proyecto final',
+    output: 'Informe mensual de progreso pedagogico',
+    status: 'active',
+  },
+];
+
+// ═══════════════════════════════════════════════════════════
+// DATE HELPERS
+// ═══════════════════════════════════════════════════════════
+const DAYS_ES = ['dom', 'lun', 'mar', 'mie', 'jue', 'vie', 'sab'];
+
+function getNextRunDate(cronExpr) {
+  const now = new Date();
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const dow = today.getDay();
+
+  switch (cronExpr) {
+    case 'daily-morning':
+      return { date: today, label: 'Hoy (manana)', cls: 'next-today' };
+    case 'daily-20:00':
+      return { date: today, label: 'Hoy 20:00', cls: 'next-today' };
+    case 'weekly-monday': {
+      const diff = (1 - dow + 7) % 7 || 7;
+      const d = new Date(today); d.setDate(today.getDate() + diff);
+      return { date: d, label: formatRelDate(d, diff), cls: diff <= 2 ? 'next-soon' : 'next-later' };
+    }
+    case 'weekly-friday': {
+      const diff = (5 - dow + 7) % 7 || 7;
+      const d = new Date(today); d.setDate(today.getDate() + diff);
+      return { date: d, label: formatRelDate(d, diff), cls: diff <= 2 ? 'next-soon' : 'next-later' };
+    }
+    case 'weekly-sunday': {
+      const diff = (0 - dow + 7) % 7 || 7;
+      const d = new Date(today); d.setDate(today.getDate() + diff);
+      return { date: d, label: formatRelDate(d, diff), cls: diff <= 2 ? 'next-soon' : 'next-later' };
+    }
+    case 'monthly': {
+      const d = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      const diff = Math.round((d - today) / 86400000);
+      return { date: d, label: formatRelDate(d, diff), cls: 'next-later' };
+    }
+    default:
+      return { date: today, label: '-', cls: 'next-later' };
+  }
+}
+
+function formatRelDate(date, diff) {
+  if (diff === 0) return 'Hoy';
+  if (diff === 1) return 'Manana';
+  return DAYS_ES[date.getDay()] + ' ' + date.getDate() + '/' + (date.getMonth() + 1);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const STATUS_COLOR = { active: '#00e676', 'in-progress': '#f59e0b', planned: '#374162' };
+const STATUS_LABEL = { active: 'Activo', 'in-progress': 'En construccion', planned: 'Planificado' };
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let expandedNode = null;
+let selectedNode = null;
+let expandedTaskId = null;
+
+// ═══════════════════════════════════════════════════════════
+// DATE HEADER
+// ═══════════════════════════════════════════════════════════
+const d = new Date();
+document.getElementById('current-date').textContent =
+  d.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+// ═══════════════════════════════════════════════════════════
+// SVG SETUP
+// ═══════════════════════════════════════════════════════════
+const canvasEl = document.getElementById('canvas');
+const svgEl = document.getElementById('svg');
+const svg = d3.select(svgEl);
+
+let W = canvasEl.clientWidth;
+let H = canvasEl.clientHeight;
+let cx = W / 2;
+let cy = H / 2;
+
+const g = svg.append('g').attr('id', 'main-group');
+
+const zoom = d3.zoom()
+  .scaleExtent([0.3, 3])
+  .on('zoom', (event) => { g.attr('transform', event.transform); });
+svg.call(zoom);
+
+// ═══════════════════════════════════════════════════════════
+// LAYOUT HELPERS
+// ═══════════════════════════════════════════════════════════
+function getDomainAngle(index, total) {
+  return (index / total) * 2 * Math.PI - Math.PI / 2;
+}
+function getCapAngle(domainAngle, capIndex, capTotal) {
+  const spread = Math.PI * 0.32;
+  const start = domainAngle - spread / 2;
+  const step = capTotal > 1 ? spread / (capTotal - 1) : 0;
+  return start + capIndex * step;
+}
+function polar2cart(angle, radius) {
+  return [Math.cos(angle) * radius, Math.sin(angle) * radius];
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+const R_DOMAIN = Math.min(W, H) * 0.30;
+const R_CAP    = Math.min(W, H) * 0.50;
+const R_ROOT   = 44;
+const R_DOM    = 30;
+const R_CAP_N  = 18;
+
+function render() {
+  g.selectAll('*').remove();
+  const domains = DATA.children;
+  const total = domains.length;
+
+  // Dashed rings
+  g.append('circle').attr('cx', cx).attr('cy', cy)
+    .attr('r', R_DOMAIN + R_DOM + 10).attr('fill', 'none')
+    .attr('stroke', '#0d1535').attr('stroke-width', 1).attr('stroke-dasharray', '4,6');
+  if (expandedNode) {
+    g.append('circle').attr('cx', cx).attr('cy', cy)
+      .attr('r', R_CAP + R_CAP_N + 10).attr('fill', 'none')
+      .attr('stroke', '#0d1535').attr('stroke-width', 1).attr('stroke-dasharray', '4,6');
+  }
+
+  // Links
+  domains.forEach((domain, i) => {
+    const angle = getDomainAngle(i, total);
+    const [dx, dy] = polar2cart(angle, R_DOMAIN);
+    const isExp = expandedNode === domain.id;
+    const isPlanned = domain.status === 'planned';
+
+    if (isExp && domain.children) {
+      domain.children.forEach((cap, ci) => {
+        const capAngle = getCapAngle(angle, ci, domain.children.length);
+        const [cx2, cy2] = polar2cart(capAngle, R_CAP);
+        g.append('path')
+          .attr('d', `M ${cx+dx} ${cy+dy} Q ${cx+dx*1.3+(cx2-dx)*0.3} ${cy+dy*1.3+(cy2-dy)*0.3} ${cx+cx2} ${cy+cy2}`)
+          .attr('fill', 'none')
+          .attr('stroke', isPlanned ? '#1a2040' : domain.color + '22')
+          .attr('stroke-width', 1.5);
+      });
+    }
+
+    g.append('line')
+      .attr('x1', cx).attr('y1', cy)
+      .attr('x2', cx+dx).attr('y2', cy+dy)
+      .attr('stroke', isPlanned ? '#1a2545' : domain.color + '55')
+      .attr('stroke-width', isExp ? 2.5 : 1.5)
+      .attr('stroke-dasharray', isPlanned ? '5,4' : 'none');
+  });
+
+  // Cap nodes
+  if (expandedNode) {
+    const domain = domains.find(d => d.id === expandedNode);
+    if (domain && domain.children) {
+      const domainIndex = domains.indexOf(domain);
+      const domainAngle = getDomainAngle(domainIndex, total);
+      const isPlanned = domain.status === 'planned';
+
+      domain.children.forEach((cap, ci) => {
+        const capAngle = getCapAngle(domainAngle, ci, domain.children.length);
+        const [cx2, cy2] = polar2cart(capAngle, R_CAP);
+        const capStatus = cap.status || 'active';
+
+        const capGroup = g.append('g').attr('class', 'node cap-node')
+          .attr('transform', `translate(${cx+cx2},${cy+cy2})`)
+          .on('click', (event) => { event.stopPropagation(); selectCapNode(cap, domain); });
+
+        if (capStatus !== 'planned') {
+          capGroup.append('circle').attr('r', R_CAP_N + 8)
+            .attr('fill', domain.color + '10').attr('class', 'bg-circle');
+        }
+        capGroup.append('circle').attr('r', R_CAP_N)
+          .attr('fill', capStatus === 'planned' ? '#0e1428' : '#0d1535')
+          .attr('stroke', capStatus === 'planned' ? '#2a3460' : domain.color + '88')
+          .attr('stroke-width', selectedNode && selectedNode.id === cap.id ? 3 : 1.5)
+          .attr('stroke-dasharray', capStatus === 'planned' ? '4,3' : 'none')
+          .attr('class', 'main-circle');
+        capGroup.append('circle')
+          .attr('cx', R_CAP_N-4).attr('cy', -(R_CAP_N-4)).attr('r', 4)
+          .attr('fill', STATUS_COLOR[capStatus]).attr('stroke', '#07091a').attr('stroke-width', 1.5);
+
+        const anchor = Math.abs(capAngle % (2*Math.PI)) < Math.PI*0.5 ||
+                       Math.abs(capAngle % (2*Math.PI)) > Math.PI*1.5 ? 'start' : 'end';
+        const lx = Math.cos(capAngle) * (R_CAP_N + 14);
+        const ly = Math.sin(capAngle) * (R_CAP_N + 14);
+        capGroup.append('text').attr('x', lx).attr('y', ly)
+          .attr('text-anchor', anchor).attr('class', 'cap-label')
+          .style('fill', capStatus === 'planned' ? '#3a4870' : '#7a90c0')
+          .text(cap.name);
+      });
+    }
+  }
+
+  // Domain nodes
+  domains.forEach((domain, i) => {
+    const angle = getDomainAngle(i, total);
+    const [dx, dy] = polar2cart(angle, R_DOMAIN);
+    const isExp = expandedNode === domain.id;
+    const isPlanned = domain.status === 'planned';
+    const isSel = selectedNode && selectedNode.id === domain.id;
+
+    const domGroup = g.append('g').attr('class', 'node domain-node')
+      .attr('transform', `translate(${cx+dx},${cy+dy})`)
+      .on('click', (event) => {
+        event.stopPropagation();
+        toggleDomain(domain.id);
+        selectDomainNode(domain);
+      });
+
+    if (!isPlanned) {
+      domGroup.append('circle').attr('r', R_DOM + 14)
+        .attr('fill', isExp ? domain.color+'18' : domain.color+'08').attr('class', 'bg-circle');
+    }
+    if (isExp) {
+      domGroup.append('circle').attr('r', R_DOM + 5)
+        .attr('fill', 'none').attr('stroke', domain.color+'55').attr('stroke-width', 1.5);
+    }
+    domGroup.append('circle').attr('r', R_DOM)
+      .attr('fill', isPlanned ? '#0e1428' : (isExp ? domain.color+'28' : '#0d1535'))
+      .attr('stroke', isPlanned ? '#2a3460' : (isSel ? domain.color : domain.color+'80'))
+      .attr('stroke-width', isSel || isExp ? 2.5 : 1.5)
+      .attr('stroke-dasharray', isPlanned ? '5,4' : 'none')
+      .attr('class', 'main-circle');
+
+    domGroup.append('text').attr('y', -8).attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central').style('font-size', '16px').style('user-select', 'none')
+      .text(domain.icon);
+    domGroup.append('circle')
+      .attr('cx', R_DOM-6).attr('cy', -(R_DOM-6)).attr('r', 5)
+      .attr('fill', STATUS_COLOR[domain.status]).attr('stroke', '#07091a').attr('stroke-width', 1.5);
+
+    const labelOffset = R_DOM + 14;
+    const lx = Math.cos(angle) * labelOffset;
+    const ly = Math.sin(angle) * labelOffset;
+    const textAnchor = (angle > -Math.PI*0.45 && angle < Math.PI*0.45) ? 'start'
+                     : (angle > Math.PI*0.55 || angle < -Math.PI*0.55) ? 'end' : 'middle';
+
+    const labelGroup = domGroup.append('g').attr('transform', `translate(${lx},${ly})`);
+    labelGroup.append('text').attr('y', -7).attr('text-anchor', textAnchor).attr('class', 'label')
+      .style('fill', isPlanned ? '#3a4870' : '#c0d0f0').text(domain.name);
+    labelGroup.append('text').attr('y', 7).attr('text-anchor', textAnchor).attr('class', 'sublabel')
+      .style('fill', isPlanned ? '#2a3555' : '#4a6090').text(domain.subtitle);
+
+    if (domain.children) {
+      domGroup.append('circle')
+        .attr('cx', -(R_DOM-6)).attr('cy', -(R_DOM-6)).attr('r', 9)
+        .attr('fill', isPlanned ? '#1a2040' : domain.color+'30')
+        .attr('stroke', isPlanned ? '#2a3460' : domain.color+'60').attr('stroke-width', 1);
+      domGroup.append('text')
+        .attr('x', -(R_DOM-6)).attr('y', -(R_DOM-6))
+        .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+        .style('font-size', '9px').style('font-weight', '700')
+        .style('fill', isPlanned ? '#3a4870' : domain.color)
+        .text(domain.children.length);
+    }
+  });
+
+  // Root node
+  const rootGroup = g.append('g').attr('class', 'node')
+    .attr('transform', `translate(${cx},${cy})`)
+    .on('click', (event) => { event.stopPropagation(); collapseAll(); selectRootNode(); });
+
+  [80, 62, 52].forEach((r) => {
+    rootGroup.append('circle').attr('r', r).attr('fill', 'none')
+      .attr('stroke', 'rgba(74,158,255,0.05)').attr('stroke-width', 1);
+  });
+  rootGroup.append('circle').attr('r', R_ROOT)
+    .attr('fill', '#0d1a3a').attr('stroke', '#4a9eff').attr('stroke-width', 2.5).attr('class', 'main-circle');
+  rootGroup.append('text').attr('y', -10).attr('class', 'center-label').text('Jeffrey');
+  rootGroup.append('text').attr('y', 8).attr('class', 'center-sublabel').text('Evolve · v1.0');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERACTIONS — GRAPH
+// ═══════════════════════════════════════════════════════════
+function toggleDomain(id) {
+  expandedNode = expandedNode === id ? null : id;
+  render();
+}
+function collapseAll() { expandedNode = null; render(); }
+
+function selectRootNode() {
+  selectedNode = { id: 'root', ...DATA };
+  showPanel({
+    icon: '⚡', name: 'Jeffrey', subtitle: 'Asistente de Evolve',
+    status: 'active', color: '#4a9eff', description: DATA.description,
+    children: DATA.children.map(d => ({
+      id: d.id, name: d.name,
+      description: d.subtitle + ' — ' + d.children.length + ' capacidades',
+      status: d.status, color: d.color,
+    }))
+  });
+}
+function selectDomainNode(domain) { selectedNode = domain; showPanel(domain); }
+function selectCapNode(cap, domain) {
+  selectedNode = cap;
+  showPanel({ icon: domain.icon, name: cap.name, subtitle: domain.name,
+    status: cap.status || 'active', color: domain.color, description: cap.description, children: null });
+  render();
+}
+
+function showPanel(node) {
+  document.getElementById('panel-icon').textContent = node.icon || '';
+  document.getElementById('panel-name').textContent = node.name;
+  document.getElementById('panel-subtitle').textContent = node.subtitle || '';
+  const sc = STATUS_COLOR[node.status] || '#374162';
+  const sl = STATUS_LABEL[node.status] || node.status;
+  let html = `
+    <div>
+      <div class="panel-section-title">Estado</div>
+      <div id="panel-status" style="background:${sc}18;border:1px solid ${sc}40;color:${sc}">
+        <div class="status-dot" style="background:${sc};box-shadow:0 0 6px ${sc}"></div>${sl}
+      </div>
+    </div>
+    <div>
+      <div class="panel-section-title">Descripcion</div>
+      <div id="panel-description">${node.description || ''}</div>
+    </div>`;
+  if (node.children && node.children.length) {
+    html += `<div><div class="panel-section-title">Capacidades (${node.children.length})</div><div id="panel-capabilities">`;
+    node.children.forEach(cap => {
+      const cs = STATUS_COLOR[cap.status || 'active'];
+      html += `<div class="cap-item"><div class="cap-dot" style="background:${cs};box-shadow:0 0 5px ${cs}80"></div>
+        <div><div class="cap-name">${cap.name}</div><div class="cap-desc">${cap.description}</div></div></div>`;
+    });
+    html += `</div></div>`;
+  }
+  document.getElementById('panel-body').innerHTML = html;
+}
+
+svg.on('click', () => {
+  expandedNode = null; selectedNode = null; render();
+  document.getElementById('panel-body').innerHTML = `<div id="panel-empty"><div class="empty-icon">◎</div><p>Selecciona un modulo para ver sus capacidades y descripcion</p></div>`;
+  document.getElementById('panel-icon').textContent = '';
+  document.getElementById('panel-name').textContent = '';
+  document.getElementById('panel-subtitle').textContent = '';
+});
+
+// ═══════════════════════════════════════════════════════════
+// STATS BAR
+// ═══════════════════════════════════════════════════════════
+function computeStats() {
+  let totalCaps = 0, activeCaps = 0, inProgressCaps = 0, plannedCaps = 0;
+  DATA.children.forEach(d => {
+    if (d.children) d.children.forEach(c => {
+      totalCaps++;
+      if (c.status === 'active') activeCaps++;
+      else if (c.status === 'in-progress') inProgressCaps++;
+      else if (c.status === 'planned') plannedCaps++;
+    });
+  });
+  return { modules: DATA.children.length, totalCaps, activeCaps, inProgressCaps, plannedCaps, scheduled: SCHEDULED_TASKS.length };
+}
+
+function buildStatsBar() {
+  const stats = computeStats();
+  const bar = document.getElementById('stats-bar');
+  bar.innerHTML = `
+    <button class="stat-btn" title="Total de modulos en el sistema">
+      <span class="stat-num">${stats.modules}</span>
+      <span class="stat-label">Modulos</span>
+    </button>
+    <button class="stat-btn" title="Capacidades activas y en uso">
+      <span class="stat-num" style="color:#00e676">${stats.activeCaps}</span>
+      <span class="stat-label">Activas</span>
+    </button>
+    <button class="stat-btn" title="Capacidades en construccion parcial">
+      <span class="stat-num" style="color:#f59e0b">${stats.inProgressCaps}</span>
+      <span class="stat-label">En progreso</span>
+    </button>
+    <button class="stat-btn" title="Capacidades planificadas pendientes de construir">
+      <span class="stat-num" style="color:#546e7a">${stats.plannedCaps}</span>
+      <span class="stat-label">Planificadas</span>
+    </button>
+    <button class="stat-btn clickable active-btn" onclick="openScheduleModal()" title="Ver tareas programadas del HEARTBEAT">
+      <span class="stat-icon">⏰</span>
+      <span class="stat-num" style="color:#f59e0b">${stats.scheduled}</span>
+      <span class="stat-label">Programadas</span>
+    </button>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCHEDULE MODAL
+// ═══════════════════════════════════════════════════════════
+function openScheduleModal() {
+  renderScheduleModal();
+  document.getElementById('schedule-modal').classList.add('open');
+}
+function closeScheduleModal() {
+  document.getElementById('schedule-modal').classList.remove('open');
+}
+
+function renderScheduleModal() {
+  const groups = { daily: [], weekly: [], monthly: [] };
+  SCHEDULED_TASKS.forEach(t => groups[t.schedule].push(t));
+
+  const freqLabel = { daily: 'Diario', weekly: 'Semanal', monthly: 'Mensual' };
+  const freqClass = { daily: 'freq-daily', weekly: 'freq-weekly', monthly: 'freq-monthly' };
+
+  let html = '';
+  ['daily', 'weekly', 'monthly'].forEach(freq => {
+    if (!groups[freq].length) return;
+    html += `
+      <div class="schedule-section">
+        <div class="schedule-section-header">
+          <span class="schedule-freq-badge ${freqClass[freq]}">${freqLabel[freq]}</span>
+          <span class="section-count">${groups[freq].length} tarea${groups[freq].length > 1 ? 's' : ''}</span>
+          <div class="section-divider"></div>
+        </div>
+        <div class="task-cards">`;
+
+    groups[freq].forEach(task => {
+      const nr = getNextRunDate(task.cronExpr);
+      html += `
+        <div class="task-card" id="tc-${task.id}" onclick="toggleTaskCard('${task.id}')">
+          <div class="task-card-header">
+            <div class="task-status-dot"></div>
+            <span class="task-name">${task.name}</span>
+            <span class="task-agent">${task.agent}</span>
+            <span class="task-next-run ${nr.cls}">${nr.label}</span>
+            <span class="task-chevron">›</span>
+          </div>
+          <div class="task-detail">
+            <div class="task-detail-inner">
+              <div class="task-detail-item full">
+                <div class="detail-label">Descripcion</div>
+                <div class="detail-value">${task.description}</div>
+              </div>
+              <div class="task-detail-item">
+                <div class="detail-label">Hora / Momento</div>
+                <div class="detail-value">${task.time}</div>
+              </div>
+              <div class="task-detail-item">
+                <div class="detail-label">Skill activa</div>
+                <div class="detail-value" style="font-family:monospace">${task.skill}</div>
+              </div>
+              <div class="task-detail-item full">
+                <div class="detail-label">Output esperado</div>
+                <div class="detail-value">${task.output}</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  document.getElementById('modal-body-content').innerHTML = html;
+  // Restore expanded state
+  if (expandedTaskId) {
+    const el = document.getElementById('tc-' + expandedTaskId);
+    if (el) el.classList.add('expanded');
+  }
+}
+
+function toggleTaskCard(id) {
+  const el = document.getElementById('tc-' + id);
+  if (!el) return;
+  const isExp = el.classList.contains('expanded');
+  document.querySelectorAll('.task-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!isExp) { el.classList.add('expanded'); expandedTaskId = id; }
+  else expandedTaskId = null;
+}
+
+// Close modal on Escape
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeScheduleModal(); });
+
+// ═══════════════════════════════════════════════════════════
+// RESIZE
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  W = canvasEl.clientWidth; H = canvasEl.clientHeight;
+  cx = W / 2; cy = H / 2;
+  render();
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+render();
+buildStatsBar();
+svg.call(zoom.transform, d3.zoomIdentity);
+</script>
+</body>
+</html>
