@@ -18,6 +18,13 @@ __pycache__/
 venv/
 .python-version
 
+# Vídeos y archivos grandes (superan límite GitHub 100MB)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
 # macOS
 .DS_Store
 
