@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="intro-youtube" data-composition-id="intro-youtube" data-start="0" data-width="1920" data-height="1080">
+
+  <!-- Video wrapper para Ken Burns (oversized 4% por lado para headroom) -->
+  <div id="vid-wrap">
+    <video id="vid"
+      data-start="0" data-duration="21.21" data-track-index="0"
+      src="assets/video_editado_v2.mp4"
+      muted playsinline>
+    </video>
+  </div>
+
+  <!-- Audio limpio extraído del original (sin eco) -->
+  <audio id="aud"
+    data-start="0" data-duration="21.21" data-track-index="1"
+    src="assets/audio_clean.m4a"
+    data-volume="1">
+  </audio>
+
+  <!-- Música épica de fondo — colocar archivo en assets/bg_music.mp3 y descomentar -->
+  <!--
+  <audio id="bgm"
+    data-start="0" data-duration="21.21" data-track-index="2"
+    src="assets/bg_music.mp3"
+    data-volume="0.10">
+  </audio>
+  -->
+
+  <!-- Overlay: gradientes, logo, tarjetas, captions, progress bar -->
+  <div id="overlay">
+
+    <div id="grad-bottom"></div>
+    <div id="grad-right"></div>
+    <div id="top-accent"></div>
+
+    <!-- Logo — top left, visible 0.15s–3.35s -->
+    <div id="logo-wrap">
+      <span id="logo-text">EVOLVE</span>
+      <span id="logo-dot"></span>
+    </div>
+
+    <!-- Barra de progreso azul -->
+    <div id="progress-bar"></div>
+
+    <!-- Tarjeta 1: Era del chat (0.6s–4.4s) -->
+    <div id="card-1" class="side-card">
+      <div class="card-eyebrow">HACE UN AÑO</div>
+      <div class="card-icon-wrap">
+        <svg width="72" height="64" viewBox="0 0 72 64" fill="none">
+          <rect x="2" y="2" width="52" height="40" rx="9" fill="rgba(0,102,255,0.12)" stroke="#0066ff" stroke-width="2.2"/>
+          <path d="M12 54 L18 44 H2" fill="rgba(0,102,255,0.18)" stroke="#0066ff" stroke-width="2.0" stroke-linejoin="round"/>
+          <line x1="12" y1="15" x2="42" y2="15" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.80"/>
+          <line x1="12" y1="24" x2="36" y2="24" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.50"/>
+          <line x1="12" y1="33" x2="28" y2="33" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.28"/>
+          <circle cx="50" cy="33" r="3" fill="#0066ff" opacity="0.9"/>
+          <circle cx="57" cy="33" r="3" fill="#0066ff" opacity="0.55"/>
+          <circle cx="64" cy="33" r="3" fill="#0066ff" opacity="0.28"/>
+        </svg>
+      </div>
+      <div class="card-title">IA = pedirle<br>cosas a un chat</div>
+      <div class="card-sub">Respuestas. Nada más.</div>
+    </div>
+
+    <!-- Tarjeta 2: Agentes (5.0s–9.5s) -->
+    <div id="card-2" class="side-card">
+      <div class="card-eyebrow">AHORA</div>
+      <div class="card-icon-wrap">
+        <svg width="80" height="70" viewBox="0 0 80 70" fill="none">
+          <circle cx="40" cy="35" r="14" fill="#0066ff"/>
+          <path d="M33 30 L33 40 L48 35 Z" fill="#ffffff"/>
+          <circle cx="40" cy="35" r="22" fill="none" stroke="#0066ff" stroke-width="1.5" opacity="0.30"/>
+          <circle cx="70" cy="10" r="8" fill="none" stroke="#0066ff" stroke-width="2"/>
+          <circle cx="70" cy="60" r="8" fill="none" stroke="#0066ff" stroke-width="2"/>
+          <circle cx="8"  cy="35" r="8" fill="none" stroke="#0066ff" stroke-width="2"/>
+          <circle cx="62" cy="10" r="3" fill="#0066ff" opacity="0.7"/>
+          <circle cx="62" cy="60" r="3" fill="#0066ff" opacity="0.7"/>
+          <circle cx="16" cy="35" r="3" fill="#0066ff" opacity="0.7"/>
+          <line x1="53" y1="27" x2="63" y2="16" stroke="#0066ff" stroke-width="1.8" opacity="0.72"/>
+          <line x1="53" y1="43" x2="63" y2="54" stroke="#0066ff" stroke-width="1.8" opacity="0.72"/>
+          <line x1="27" y1="35" x2="17" y2="35" stroke="#0066ff" stroke-width="1.8" opacity="0.72"/>
+        </svg>
+      </div>
+      <div class="card-title">Agentes que<br>trabajan por ti</div>
+      <div class="card-sub">Autónomos. 24/7.</div>
+    </div>
+
+    <!-- Tarjeta 3: Capacidades (lista que se construye, 9.6s–14.5s) -->
+    <div id="card-3" class="side-card side-card--list">
+      <div class="card-eyebrow">LO QUE HACEN</div>
+      <ul class="cap-list">
+        <li class="cap-item" id="li-1">
+          <span class="cap-dot"></span>
+          <span class="cap-label">Investigan</span>
+        </li>
+        <li class="cap-item" id="li-2">
+          <span class="cap-dot"></span>
+          <span class="cap-label">Comparan</span>
+        </li>
+        <li class="cap-item" id="li-3">
+          <span class="cap-dot"></span>
+          <span class="cap-label">Toman decisiones</span>
+        </li>
+        <li class="cap-item" id="li-4">
+          <span class="cap-dot"></span>
+          <span class="cap-label">Ejecutan tareas</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Tarjeta 4: Stat multiplicador (15.0s–21.1s) -->
+    <div id="card-4" class="side-card side-card--stat">
+      <div class="card-eyebrow">EL RESULTADO</div>
+      <div class="stat-row">
+        <div class="stat-unit">
+          <svg width="36" height="46" viewBox="0 0 36 46" fill="none">
+            <circle cx="18" cy="11" r="9" fill="rgba(255,255,255,0.55)"/>
+            <path d="M2 44 C2 32 34 32 34 44" fill="rgba(255,255,255,0.55)"/>
+          </svg>
+          <div class="stat-one">1</div>
+        </div>
+        <div id="stat-arrow" class="stat-arrow">→</div>
+        <div id="stat-multiplier" class="stat-big">×10</div>
+      </div>
+      <div class="stat-sub">producción de<br>una sola persona</div>
+    </div>
+
+    <!-- Captions generadas por JS -->
+  </div>
+
+  <style>
+    #intro-youtube {
+      background: #1a1a1a;
+      overflow: hidden;
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+    }
+
+    #vid-wrap {
+      position: absolute;
+      top: -4%; left: -4%;
+      width: 108%; height: 108%;
+      overflow: hidden;
+    }
+    #vid {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    #top-accent {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: #0066ff;
+      z-index: 25;
+    }
+
+    #grad-bottom {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 480px;
+      background: linear-gradient(to top,
+        rgba(0,0,0,0.93) 0%,
+        rgba(0,0,0,0.55) 48%,
+        transparent 100%);
+    }
+
+    #grad-right {
+      position: absolute;
+      top: 0; right: 0;
+      width: 720px; height: 100%;
+      background: linear-gradient(to left,
+        rgba(0,0,0,0.78) 0%,
+        rgba(0,0,0,0.32) 60%,
+        transparent 100%);
+    }
+
+    #logo-wrap {
+      position: absolute;
+      top: 52px; left: 80px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      opacity: 0;
+      z-index: 20;
+    }
+    #logo-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 30px; font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.15em;
+    }
+    #logo-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #0066ff;
+      box-shadow: 0 0 14px rgba(0,102,255,0.85);
+    }
+
+    #progress-bar {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 5px;
+      background: #0066ff;
+      transform-origin: left center;
+      transform: scaleX(0);
+      z-index: 20;
+      box-shadow: 0 0 18px rgba(0,102,255,0.75);
+    }
+
+    /* ── Side cards ── */
+    .side-card {
+      position: absolute;
+      right: 60px;
+      top: 180px;
+      width: 540px;
+      background: rgba(6, 6, 12, 0.93);
+      border: 2px solid rgba(0, 102, 255, 0.52);
+      border-radius: 24px;
+      padding: 40px 38px;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 10;
+      box-shadow:
+        0 0 70px rgba(0,102,255,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        0 28px 70px rgba(0,0,0,0.60);
+    }
+
+    .side-card--list {
+      top: 155px;
+      padding: 36px 34px;
+    }
+
+    .side-card--stat {
+      top: 195px;
+    }
+
+    .card-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px; font-weight: 600;
+      color: #0066ff;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .card-icon-wrap {
+      margin-bottom: 22px;
+    }
+
+    .card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 40px; font-weight: 700;
+      color: #ffffff;
+      line-height: 1.22;
+    }
+
+    .card-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px; font-weight: 400;
+      color: rgba(255,255,255,0.42);
+      margin-top: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    /* Lista capacidades */
+    .cap-list {
+      list-style: none;
+      margin: 20px 0 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cap-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      opacity: 0;
+    }
+
+    .cap-dot {
+      display: inline-block;
+      flex-shrink: 0;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #0066ff;
+      box-shadow: 0 0 10px rgba(0,102,255,0.65);
+    }
+
+    .cap-label {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 34px; font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Stat card */
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin: 18px 0 16px;
+    }
+
+    .stat-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .stat-one {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 50px; font-weight: 700;
+      color: rgba(255,255,255,0.58);
+      line-height: 1;
+    }
+
+    .stat-arrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 44px; font-weight: 400;
+      color: rgba(255,255,255,0.42);
+      opacity: 0;
+      padding-bottom: 6px;
+    }
+
+    .stat-big {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 118px; font-weight: 800;
+      color: #0066ff;
+      line-height: 1;
+      opacity: 0;
+      text-shadow: 0 0 50px rgba(0,102,255,0.55);
+    }
+
+    .stat-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px; font-weight: 400;
+      color: rgba(255,255,255,0.52);
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    /* Captions */
+    .cg {
+      position: absolute;
+      bottom: 82px;
+      left: 160px; right: 160px;
+      text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.1;
+      opacity: 0;
+      visibility: hidden;
+      white-space: nowrap;
+      z-index: 30;
+      text-shadow:
+        0 2px 14px rgba(0,0,0,0.95),
+        0 1px 4px rgba(0,0,0,1.00),
+        0 4px 30px rgba(0,0,0,0.70);
+    }
+    /* Word spans for karaoke */
+    .cg .w { display: inline; color: inherit; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+  (function() {
+
+    /*
+     * GROUPS: caption groups con word-level timestamps de Whisper.
+     * Cada word: t=texto, ws=start, we=end (en segundos del vídeo editado).
+     * pop:true → scale pop al iluminarse.
+     */
+    var GROUPS = [
+      { id:"g0",  start:0.10,  end:1.25,
+        words:[
+          {t:"Hace",    ws:0.00,  we:0.74},
+          {t:"un",      ws:0.74,  we:1.18},
+          {t:"año",     ws:1.18,  we:1.25}
+        ]
+      },
+      { id:"g1",  start:1.40,  end:2.74,
+        words:[
+          {t:"usar",         ws:1.18,  we:1.60},
+          {t:"inteligencia", ws:1.60,  we:2.08},
+          {t:"artificial",   ws:2.08,  we:2.74}
+        ]
+      },
+      { id:"g2",  start:2.74,  end:4.55,
+        words:[
+          {t:"era",     ws:2.76,  we:3.34},
+          {t:"pedirle", ws:3.34,  we:3.96},
+          {t:"cosas",   ws:3.96,  we:4.08},
+          {t:"a",       ws:4.08,  we:4.24},
+          {t:"un",      ws:4.24,  we:4.42},
+          {t:"chat",    ws:4.42,  we:4.55}
+        ]
+      },
+      { id:"g3",  start:4.60,  end:6.14,
+        words:[
+          {t:"hoy",     ws:5.56,  we:5.68},
+          {t:"ya",      ws:5.68,  we:5.78},
+          {t:"estamos", ws:5.78,  we:6.14}
+        ]
+      },
+      { id:"g4",  start:6.14,  end:7.55,
+        words:[
+          {t:"entrando", ws:6.18, we:6.74},
+          {t:"en",       ws:6.74, we:7.04},
+          {t:"otra",     ws:7.04, we:7.24},
+          {t:"fase",     ws:7.24, we:7.55}
+        ]
+      },
+      { id:"g5",  start:7.82,  end:9.65,
+        words:[
+          {t:"a",        ws:7.82, we:7.86},
+          {t:"agentes",  ws:7.86, we:8.08, pop:true},
+          {t:"que",      ws:8.08, we:8.44},
+          {t:"trabajan", ws:8.44, we:8.74},
+          {t:"por",      ws:8.74, we:9.18},
+          {t:"ti",       ws:9.18, we:9.65}
+        ]
+      },
+      { id:"g6",  start:9.80,  end:11.28,
+        words:[
+          {t:"que",          ws:9.84,  we:9.92},
+          {t:"investigan,",  ws:9.92,  we:10.94},
+          {t:"comparan",     ws:10.94, we:11.28}
+        ]
+      },
+      { id:"g7",  start:11.28, end:12.24,
+        words:[
+          {t:"toman",      ws:11.28, we:11.65},
+          {t:"decisiones", ws:11.65, we:12.24}
+        ]
+      },
+      { id:"g8",  start:12.24, end:13.26,
+        words:[
+          {t:"y",        ws:12.24, we:12.32},
+          {t:"ejecutan", ws:12.32, we:12.62},
+          {t:"tareas",   ws:12.62, we:13.26}
+        ]
+      },
+      { id:"g9",  start:13.26, end:14.65,
+        words:[
+          {t:"mientras", ws:13.26, we:13.52},
+          {t:"tú",       ws:13.52, we:13.68},
+          {t:"sigues",   ws:13.68, we:13.92},
+          {t:"con",      ws:13.92, we:14.16},
+          {t:"otras",    ws:14.16, we:14.40},
+          {t:"cosas",    ws:14.40, we:14.65}
+        ]
+      },
+      { id:"g10", start:14.73, end:17.07,
+        words:[
+          {t:"Esto",    ws:15.12, we:15.22},
+          {t:"no",      ws:15.22, we:15.34},
+          {t:"va",      ws:15.34, we:15.46},
+          {t:"a",       ws:15.46, we:15.52},
+          {t:"hacer",   ws:15.52, we:15.72},
+          {t:"trabajo", ws:15.72, we:16.18},
+          {t:"más",     ws:16.18, we:16.52},
+          {t:"rápido",  ws:16.52, we:17.07}
+        ]
+      },
+      { id:"g11", start:17.07, end:18.17,
+        words:[
+          {t:"ni",    ws:17.07, we:17.20},
+          {t:"más",   ws:17.20, we:17.44},
+          {t:"veces", ws:17.44, we:17.68},
+          {t:"lo",    ws:17.68, we:17.82},
+          {t:"mismo", ws:17.82, we:18.17}
+        ]
+      },
+      { id:"g12", start:18.17, end:19.45,
+        words:[
+          {t:"va",          ws:18.17, we:18.20},
+          {t:"a",           ws:18.20, we:18.26},
+          {t:"multiplicar", ws:18.26, we:19.14, pop:true}
+        ]
+      },
+      { id:"g13", start:19.45, end:20.17,
+        words:[
+          {t:"lo",      ws:19.45, we:19.54},
+          {t:"que",     ws:19.54, we:19.62},
+          {t:"una",     ws:19.62, we:19.70},
+          {t:"sola",    ws:19.70, we:19.84},
+          {t:"persona", ws:19.84, we:20.17}
+        ]
+      },
+      { id:"g14", start:20.17, end:21.18,
+        words:[
+          {t:"puede",     ws:20.17, we:20.66},
+          {t:"producir.", ws:20.66, we:21.18}
+        ]
+      }
+    ];
+
+    var overlay = document.getElementById("overlay");
+
+    /* Construir caption elements con word spans */
+    GROUPS.forEach(function(g) {
+      var el = document.createElement("div");
+      el.className = "cg"; el.id = g.id;
+      el.innerHTML = g.words.map(function(w, i) {
+        return '<span id="' + g.id + '-w' + i + '" class="w">' + w.t + '</span>';
+      }).join(' ');
+      overlay.appendChild(el);
+
+      var fullText = g.words.map(function(w){ return w.t; }).join(' ');
+      var fit = (window.__hyperframes && window.__hyperframes.fitTextFontSize)
+        ? window.__hyperframes.fitTextFontSize(fullText, {
+            fontFamily:"Plus Jakarta Sans", fontWeight:700,
+            maxWidth:1560, baseFontSize:76, minFontSize:48 })
+        : { fontSize:76 };
+      el.style.fontSize = fit.fontSize + "px";
+    });
+
+    /* ══ Timeline ══ */
+    var tl = gsap.timeline({ paused: true });
+
+    /* Ken Burns: push-in suave + leve drift */
+    tl.fromTo("#vid-wrap",
+      { scale:1.00, x:0,   y:0 },
+      { scale:1.05, x:-18, y:-8, duration:21.21, ease:"power1.inOut" },
+      0
+    );
+
+    /* Barra de progreso */
+    tl.to("#progress-bar", { scaleX:1, duration:21.21, ease:"none" }, 0);
+
+    /* Logo entrada / salida */
+    tl.fromTo("#logo-wrap",
+      { x:-28, opacity:0 },
+      { x:0,   opacity:1, duration:0.55, ease:"power3.out" },
+      0.15
+    );
+    tl.to("#logo-wrap", { opacity:0, x:-12, duration:0.35, ease:"power2.in" }, 3.1);
+
+    /* ── Tarjeta 1: Chat era ── */
+    tl.set("#card-1", { visibility:"visible" }, 0.6);
+    tl.fromTo("#card-1",
+      { x:44, opacity:0 },
+      { x:0,  opacity:1, duration:0.52, ease:"power3.out" },
+      0.6
+    );
+    tl.to("#card-1", { x:32, opacity:0, duration:0.30, ease:"power2.in" }, 4.1);
+    tl.set("#card-1", { visibility:"hidden" }, 4.4);
+
+    /* ── Tarjeta 2: Agentes ── */
+    tl.set("#card-2", { visibility:"visible" }, 5.0);
+    tl.fromTo("#card-2",
+      { x:44, opacity:0 },
+      { x:0,  opacity:1, duration:0.52, ease:"expo.out" },
+      5.0
+    );
+    tl.to("#card-2", { x:32, opacity:0, duration:0.30, ease:"power2.in" }, 9.2);
+    tl.set("#card-2", { visibility:"hidden" }, 9.5);
+
+    /* ── Tarjeta 3: Lista ── */
+    tl.set("#card-3", { visibility:"visible" }, 9.65);
+    tl.fromTo("#card-3",
+      { x:44, opacity:0 },
+      { x:0,  opacity:1, duration:0.48, ease:"power3.out" },
+      9.65
+    );
+    [
+      { id:"#li-1", t:9.90  },
+      { id:"#li-2", t:11.05 },
+      { id:"#li-3", t:11.55 },
+      { id:"#li-4", t:12.35 },
+    ].forEach(function(item) {
+      tl.fromTo(item.id,
+        { x:14, opacity:0 },
+        { x:0,  opacity:1, duration:0.28, ease:"power2.out" },
+        item.t
+      );
+    });
+    tl.to("#card-3", { x:32, opacity:0, duration:0.30, ease:"power2.in" }, 14.2);
+    tl.set("#card-3", { visibility:"hidden" }, 14.5);
+
+    /* ── Tarjeta 4: Stat ── */
+    tl.set("#card-4", { visibility:"visible" }, 15.0);
+    tl.fromTo("#card-4",
+      { x:44, opacity:0 },
+      { x:0,  opacity:1, duration:0.52, ease:"expo.out" },
+      15.0
+    );
+    tl.fromTo("#stat-arrow",
+      { scale:0.5, opacity:0 },
+      { scale:1,   opacity:1, duration:0.32, ease:"back.out(1.5)" },
+      17.2
+    );
+    tl.fromTo("#stat-multiplier",
+      { scale:0.40, opacity:0 },
+      { scale:1,    opacity:1, duration:0.46, ease:"back.out(2.0)" },
+      18.30
+    );
+    tl.to("#card-4", { opacity:0, duration:0.4, ease:"power2.in" }, 20.8);
+    tl.set("#card-4", { visibility:"hidden" }, 21.21);
+
+    /* ── Captions con karaoke word-by-word ── */
+    GROUPS.forEach(function(g) {
+      var el = document.getElementById(g.id);
+      if (!el) return;
+
+      tl.set(el, { visibility:"visible" }, g.start);
+      tl.fromTo(el,
+        { opacity:0, y:20 },
+        { opacity:1, y:0, duration:0.18, ease:"power2.out" },
+        g.start
+      );
+
+      /* Karaoke: palabra activa → azul, siguiente → vuelve a blanco */
+      g.words.forEach(function(w, i) {
+        var spanId = "#" + g.id + "-w" + i;
+        var wStart = Math.max(g.start + 0.05, w.ws);
+        var wEnd   = (i + 1 < g.words.length)
+          ? Math.max(wStart + 0.12, g.words[i + 1].ws)
+          : g.end - 0.10;
+        wEnd = Math.min(wEnd, g.end - 0.04);
+
+        tl.to(spanId, { color:"#0066ff", duration:0.05, ease:"none" }, wStart);
+        if (w.pop) {
+          tl.fromTo(spanId,
+            { scale:0.80 },
+            { scale:1, duration:0.30, ease:"back.out(2.2)" },
+            wStart
+          );
+        }
+        tl.to(spanId, { color:"#ffffff", duration:0.10, ease:"none" }, wEnd);
+      });
+
+      tl.to(el,  { opacity:0, y:-14, duration:0.12, ease:"power2.in" }, g.end - 0.12);
+      tl.set(el, { opacity:0, visibility:"hidden" }, g.end);
+    });
+
+    /* Self-lint */
+    GROUPS.forEach(function(g) {
+      var el = document.getElementById(g.id);
+      if (!el) return;
+      tl.seek(g.end + 0.01);
+      var s = window.getComputedStyle(el);
+      if (s.opacity !== "0" && s.visibility !== "hidden")
+        console.warn("[caption-lint] " + g.id + " visible at t=" + (g.end + 0.01).toFixed(2));
+    });
+    tl.seek(0);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["intro-youtube"] = tl;
+
+  })();
+  </script>
+
+</div>
+</body>
+</html>

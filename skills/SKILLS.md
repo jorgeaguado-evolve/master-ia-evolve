@@ -20,6 +20,7 @@ Cada skill reside en su propio directorio con un archivo `Skill.md` que contiene
 | Bibliotecaria | [bibliotecaria/Skill.md](bibliotecaria/Skill.md) | Interfaz completa con el vault de Obsidian — delega en `[DELEGATE:bibliotecaria]` |
 | Crear Agente | [crear-agente/Skill.md](crear-agente/Skill.md) | Crea un agente nuevo completo a partir de nombre, funciones y jerarquía |
 | Project Manager | [pm/Skill.md](pm/Skill.md) | Gestión de proyectos y tareas en ClickUp — delega en Ricky con [DELEGATE:ricky] |
+| Video | [video/Skill.md](video/Skill.md) | Producción de vídeos MP4 para redes sociales con Hyperframes (horizontal y vertical) |
 
 ## Activación
 

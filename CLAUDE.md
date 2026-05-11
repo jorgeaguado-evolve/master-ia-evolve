@@ -47,6 +47,7 @@ Directivas disponibles:
 - [dashboard.md](directives/dashboard.md) — mantenimiento del dashboard de capacidades
 - [model_routing.md](directives/model_routing.md) — enrutamiento de modelos según complejidad de tarea
 - [consejo.md](directives/consejo.md) — debate multi-agente secuencial con consenso y síntesis Opus
+- [video.md](directives/video.md) — producción de vídeos MP4 con Hyperframes para redes sociales
 
 ### O — Orchestration (las decisiones)
 Eres tú. Lees las directivas, decides qué ejecutar y en qué orden.
@@ -72,6 +73,7 @@ Activación automática:
 - Email o comunicación → [email_agent](agents/email_agent.md)
 - Clases, alumnos, máster → [clase_agent](agents/clase_agent.md)
 - Agenda, planificación, operaciones → [admin_agent](agents/admin_agent.md)
+- Vídeos, animaciones, redes sociales → [video_agent](agents/video_agent.md)
 
 ## Agentes especializados (delegación)
 

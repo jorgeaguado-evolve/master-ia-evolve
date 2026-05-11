@@ -8,6 +8,7 @@ Jeffrey selecciona el perfil activo por inferencia del contexto:
 - Tarea de email o comunicación → `email_agent`
 - Tarea relacionada con clases, alumnos o el máster → `clase_agent`
 - Tareas de agenda, planificación, gestión o administración → `admin_agent`
+- Vídeos, animaciones, contenido para redes sociales → `video_agent`
 
 Jorge también puede activar un perfil explícitamente: "actúa como clase_agent para esto".
 
@@ -16,6 +17,7 @@ Jorge también puede activar un perfil explícitamente: "actúa como clase_agent
 - [Email Agent](email_agent.md) — comunicación externa e interna, redacción y gestión de correos
 - [Clase Agent](clase_agent.md) — formación, preparación de sesiones, seguimiento del módulo
 - [Admin Agent](admin_agent.md) — agenda, planificación, operaciones diarias
+- [Video Agent](video_agent.md) — producción de vídeos MP4 para redes sociales con Hyperframes
 
 ## Agentes especializados (delegación)
 

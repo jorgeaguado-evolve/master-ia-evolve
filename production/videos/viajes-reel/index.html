@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+    }
+
+    #root {
+      font-family: 'Inter', system-ui, sans-serif;
+      position: relative;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+
+      /* ── Mesa de madera (pure CSS) ───────────────
+         Capas apiladas para simular veta y tono cálido */
+      background-color: #7A5030;
+      background-image:
+        /* Vignette de borde (oscurece esquinas) */
+        radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.42) 100%),
+        /* Veta fina diagonal 1 */
+        repeating-linear-gradient(
+          171deg,
+          transparent 0px, transparent 22px,
+          rgba(0,0,0,0.030) 22px, rgba(0,0,0,0.030) 23px,
+          transparent 23px, transparent 48px,
+          rgba(255,255,255,0.012) 48px, rgba(255,255,255,0.012) 49px
+        ),
+        /* Veta gruesa diagonal 2 */
+        repeating-linear-gradient(
+          167deg,
+          transparent 0px, transparent 65px,
+          rgba(0,0,0,0.018) 65px, rgba(0,0,0,0.018) 67px,
+          transparent 67px, transparent 110px,
+          rgba(255,255,255,0.008) 110px, rgba(255,255,255,0.008) 112px
+        ),
+        /* Gradiente base de tono madera */
+        linear-gradient(
+          158deg,
+          #9B6A3A 0%,
+          #7A4F28 30%,
+          #6B4220 55%,
+          #7D5535 75%,
+          #8A5D38 100%
+        );
+    }
+
+    /* ── Luz cenital suave (foco sobre la mesa) ──── */
+    .table-light {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 70% 55% at 50% 45%,
+        rgba(255,230,180,0.10) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    /* ── Polaroid grande ──────────────────────────── */
+    .polaroid {
+      position: absolute;
+      width: 820px;
+      /* photo area: 784×820px + 18px top + 18px sides + 88px bottom */
+      height: 944px;
+      background: #F6F2E8;
+      /* Sombra de objeto apoyado sobre mesa: difusa y cálida */
+      box-shadow:
+        0  6px 12px rgba(40,20,5,0.40),
+        0 18px 45px rgba(40,20,5,0.35),
+        0 35px 80px rgba(40,20,5,0.22),
+        inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+
+    .photo-wrap {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      bottom: 88px;
+      overflow: hidden;
+      /* Micro sombra interior: simula que la foto está ligeramente hundida */
+      box-shadow: inset 0 0 14px rgba(0,0,0,0.14);
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: contrast(1.05) saturate(0.88) brightness(0.96);
+    }
+
+    /* ── Banda inferior blanca ─────────────────────── */
+    .polaroid-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .location {
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      color: #1a1612;
+      letter-spacing: 0.03em;
+    }
+
+    .date-label {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a8872;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* ── Firma ────────────────────────────────────── */
+    .signature-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sig-line {
+      width: 36px;
+      height: 1px;
+      background: rgba(255,255,255,0.28);
+    }
+
+    .sig-name {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 0.26em;
+      color: rgba(255,255,255,0.40);
+      text-transform: uppercase;
+    }
+
+    /* ── Fade final ───────────────────────────────── */
+    .fade-overlay {
+      position: absolute;
+      inset: 0;
+      background: #3a2510;
+    }
+  </style>
+</head>
+<body>
+  <div
+    id="root"
+    data-composition-id="main"
+    data-start="0"
+    data-duration="15"
+    data-width="1080"
+    data-height="1920"
+  >
+
+    <!-- Luz cenital (no es clip, es decoración permanente) -->
+    <div class="table-light"></div>
+
+    <!-- ── AUDIO ─────────────────────────────────── -->
+    <audio
+      id="audio-bg"
+      class="clip"
+      data-start="0"
+      data-duration="15"
+      data-track-index="0"
+      data-volume="0.55"
+      src="assets/music.mp3"
+    ></audio>
+
+    <!-- ─────────────────────────────────────────────
+         Posicionamiento: Polaroid 820×944px
+         Centro objetivo: x≈540, y≈860 (safe zone)
+         Base top-left: left=130, top=388
+         Scatter: ±25px x, ±18px y, rotación ±8°
+    ──────────────────────────────────────────────── -->
+
+    <!-- FOTO 1 — Amalfi Coast -->
+    <div id="p1" class="clip polaroid"
+      data-start="0" data-duration="15" data-track-index="1"
+      style="left: 118px; top: 384px; z-index: 1;">
+      <div class="photo-wrap">
+        <img src="assets/img1.png" crossorigin="anonymous">
+      </div>
+      <div class="polaroid-label" id="p1-label">
+        <span class="location">Amalfi Coast, Italia</span>
+        <span class="date-label">08 · 09 · 2023</span>
+      </div>
+    </div>
+
+    <!-- FOTO 2 — Santorini -->
+    <div id="p2" class="clip polaroid"
+      data-start="2.5" data-duration="12.5" data-track-index="2"
+      style="left: 142px; top: 400px; z-index: 2;">
+      <div class="photo-wrap">
+        <img src="assets/img2.png" crossorigin="anonymous">
+      </div>
+      <div class="polaroid-label" id="p2-label">
+        <span class="location">Santorini, Grecia</span>
+        <span class="date-label">22 · 07 · 2023</span>
+      </div>
+    </div>
+
+    <!-- FOTO 3 — Kioto -->
+    <div id="p3" class="clip polaroid"
+      data-start="5.0" data-duration="10.0" data-track-index="3"
+      style="left: 108px; top: 372px; z-index: 3;">
+      <div class="photo-wrap">
+        <img src="assets/img3.png" crossorigin="anonymous">
+      </div>
+      <div class="polaroid-label" id="p3-label">
+        <span class="location">Kioto, Japón</span>
+        <span class="date-label">14 · 03 · 2024</span>
+      </div>
+    </div>
+
+    <!-- FOTO 4 — Marrakech -->
+    <div id="p4" class="clip polaroid"
+      data-start="7.5" data-duration="7.5" data-track-index="4"
+      style="left: 136px; top: 394px; z-index: 4;">
+      <div class="photo-wrap">
+        <img src="assets/img4.png" crossorigin="anonymous">
+      </div>
+      <div class="polaroid-label" id="p4-label">
+        <span class="location">Marrakech, Marruecos</span>
+        <span class="date-label">31 · 01 · 2024</span>
+      </div>
+    </div>
+
+    <!-- FOTO 5 — Manhattan -->
+    <div id="p5" class="clip polaroid"
+      data-start="10.0" data-duration="5.0" data-track-index="5"
+      style="left: 122px; top: 388px; z-index: 5;">
+      <div class="photo-wrap">
+        <img src="assets/img5.png" crossorigin="anonymous">
+      </div>
+      <div class="polaroid-label" id="p5-label">
+        <span class="location">Manhattan, Nueva York</span>
+        <span class="date-label">18 · 11 · 2023</span>
+      </div>
+    </div>
+
+    <!-- FIRMA -->
+    <div id="signature" class="clip signature-wrap"
+      data-start="11.5" data-duration="3.5" data-track-index="6"
+      style="top: 1690px;">
+      <div class="sig-line" id="sig-line"></div>
+      <p class="sig-name" id="sig-name">Jorge Valero</p>
+    </div>
+
+    <!-- FADE OUT -->
+    <div id="fade-out" class="clip fade-overlay"
+      data-start="14.0" data-duration="1.0" data-track-index="9">
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // ════════════════════════════════════════════════
+      // Animación "depositar": la foto viene desde cerca
+      // (≈160px arriba), cae con power3.out, y un
+      // micro-bounce de escala simula el golpe en la mesa.
+      // La rotación se corrige suavemente con power2.out.
+      // ════════════════════════════════════════════════
+
+      // ── FOTO 1 (t=0.30) ──────────────────────────
+      tl.set('#p1',       { y: -160, rotation: -14, scale: 1 }, 0);
+      tl.set('#p1-label', { opacity: 0 }, 0);
+      // Caída hacia la mesa
+      tl.to('#p1', { y: 0,    duration: 0.38, ease: 'power3.out'  }, 0.30);
+      tl.to('#p1', { rotation: -4, duration: 0.48, ease: 'power2.out' }, 0.30);
+      // Golpe suave al posarse
+      tl.to('#p1', { scale: 1.012, duration: 0.06, ease: 'none'       }, 0.68);
+      tl.to('#p1', { scale: 1.000, duration: 0.18, ease: 'power1.out' }, 0.74);
+      // Texto aparece al posarse
+      tl.to('#p1-label', { opacity: 1, duration: 0.40, ease: 'power2.out' }, 0.82);
+
+      // ── FOTO 2 (t=2.75) ──────────────────────────
+      tl.set('#p2',       { y: -160, rotation: 16, scale: 1 }, 2.5);
+      tl.set('#p2-label', { opacity: 0 }, 2.5);
+      tl.to('#p2', { y: 0,    duration: 0.36, ease: 'power3.out'  }, 2.75);
+      tl.to('#p2', { rotation: 6, duration: 0.45, ease: 'power2.out' }, 2.75);
+      tl.to('#p2', { scale: 1.012, duration: 0.06, ease: 'none'       }, 3.11);
+      tl.to('#p2', { scale: 1.000, duration: 0.18, ease: 'power1.out' }, 3.17);
+      tl.to('#p2-label', { opacity: 1, duration: 0.40, ease: 'power2.out' }, 3.24);
+
+      // ── FOTO 3 (t=5.20) ──────────────────────────
+      tl.set('#p3',       { y: -160, rotation: -18, scale: 1 }, 5.0);
+      tl.set('#p3-label', { opacity: 0 }, 5.0);
+      tl.to('#p3', { y: 0,    duration: 0.40, ease: 'power3.out'  }, 5.20);
+      tl.to('#p3', { rotation: -7, duration: 0.50, ease: 'power2.out' }, 5.20);
+      tl.to('#p3', { scale: 1.012, duration: 0.06, ease: 'none'       }, 5.60);
+      tl.to('#p3', { scale: 1.000, duration: 0.18, ease: 'power1.out' }, 5.66);
+      tl.to('#p3-label', { opacity: 1, duration: 0.40, ease: 'power2.out' }, 5.74);
+
+      // ── FOTO 4 (t=7.70) ──────────────────────────
+      tl.set('#p4',       { y: -160, rotation: 13, scale: 1 }, 7.5);
+      tl.set('#p4-label', { opacity: 0 }, 7.5);
+      tl.to('#p4', { y: 0,    duration: 0.37, ease: 'power3.out'  }, 7.70);
+      tl.to('#p4', { rotation: 3, duration: 0.46, ease: 'power2.out' }, 7.70);
+      tl.to('#p4', { scale: 1.012, duration: 0.06, ease: 'none'       }, 8.07);
+      tl.to('#p4', { scale: 1.000, duration: 0.18, ease: 'power1.out' }, 8.13);
+      tl.to('#p4-label', { opacity: 1, duration: 0.40, ease: 'power2.out' }, 8.20);
+
+      // ── FOTO 5 (t=10.20) ─────────────────────────
+      tl.set('#p5',       { y: -160, rotation: -12, scale: 1 }, 10.0);
+      tl.set('#p5-label', { opacity: 0 }, 10.0);
+      tl.to('#p5', { y: 0,    duration: 0.39, ease: 'power3.out'  }, 10.20);
+      tl.to('#p5', { rotation: -2, duration: 0.48, ease: 'power2.out' }, 10.20);
+      tl.to('#p5', { scale: 1.012, duration: 0.06, ease: 'none'       }, 10.59);
+      tl.to('#p5', { scale: 1.000, duration: 0.18, ease: 'power1.out' }, 10.65);
+      tl.to('#p5-label', { opacity: 1, duration: 0.40, ease: 'power2.out' }, 10.72);
+
+      // ── Firma (pila completa) ─────────────────────
+      tl.set('#sig-line', { scaleX: 0, transformOrigin: 'center' }, 11.5);
+      tl.set('#sig-name', { opacity: 0, y: 8 }, 11.5);
+      tl.to('#sig-line', { scaleX: 1, duration: 0.55, ease: 'expo.out' }, 12.0);
+      tl.to('#sig-name', { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 12.15);
+
+      // ── Fade a tono madera oscuro ─────────────────
+      tl.set('#fade-out', { opacity: 0 }, 14.0);
+      tl.to('#fade-out',  { opacity: 1, duration: 0.85, ease: 'power2.in' }, 14.15);
+
+      window.__timelines['main'] = tl;
+    </script>
+  </div>
+</body>
+</html>

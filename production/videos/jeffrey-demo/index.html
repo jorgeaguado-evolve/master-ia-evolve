@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: #080810;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .scene {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+  }
+
+  /* ─── SHARED DECORATIVES ─── */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .radial-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  /* ─────────────────────────── */
+  /* SCENE 1: INTRO SPLASH 0–4s */
+  /* ─────────────────────────── */
+  #s1 { z-index: 1; background: #080810; }
+
+  #s1-glow1 {
+    width: 800px; height: 600px;
+    top: -100px; left: -200px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.18) 0%, transparent 70%);
+  }
+  #s1-glow2 {
+    width: 600px; height: 500px;
+    bottom: -80px; right: 100px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.22) 0%, transparent 70%);
+  }
+  #s1-ghost {
+    position: absolute;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 420px;
+    color: rgba(0,212,255,0.04);
+    letter-spacing: -0.05em;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -48%);
+    white-space: nowrap;
+    user-select: none;
+  }
+  .s1-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  #s1-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    letter-spacing: 0.35em;
+    color: #00d4ff;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  #s1-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 160px;
+    color: #e8e8f0;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  #s1-rule {
+    width: 0;
+    height: 3px;
+    background: #00d4ff;
+    margin: 32px auto;
+  }
+  #s1-sub {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 300;
+    font-size: 38px;
+    color: rgba(232,232,240,0.7);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  #s1-badge {
+    position: absolute;
+    bottom: 60px; right: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: rgba(0,212,255,0.6);
+    letter-spacing: 0.1em;
+  }
+
+  /* ───────────────────────────────── */
+  /* SCENE 2: JEFFREY IDENTITY 4–10s  */
+  /* ───────────────────────────────── */
+  #s2 { z-index: 2; background: #080810; opacity: 0; }
+
+  #s2-glow-left {
+    width: 700px; height: 700px;
+    top: -100px; left: -150px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 70%);
+  }
+  #s2-glow-right {
+    width: 500px; height: 500px;
+    bottom: -50px; right: 200px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.15) 0%, transparent 70%);
+  }
+  #s2-divider {
+    position: absolute;
+    left: 50%; top: 0;
+    width: 2px; height: 1080px;
+    background: rgba(0,212,255,0.15);
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  /* Left panel: avatar */
+  .s2-left {
+    position: absolute;
+    left: 0; top: 0;
+    width: 960px; height: 1080px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #s2-avatar-ring {
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 3px solid rgba(0,212,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  #s2-avatar-inner {
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(135deg, #7c3aed 0%, #00d4ff 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 96px;
+    color: #e8e8f0;
+  }
+  #s2-orbit {
+    position: absolute;
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    border: 1px dashed rgba(0,212,255,0.25);
+    top: -30px; left: -30px;
+  }
+
+  /* Right panel: text */
+  .s2-right {
+    position: absolute;
+    left: 1000px; top: 0;
+    width: 860px; height: 1080px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 80px 80px 60px;
+    gap: 32px;
+  }
+  #s2-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    letter-spacing: 0.3em;
+    color: #00d4ff;
+    text-transform: uppercase;
+  }
+  #s2-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 120px;
+    color: #e8e8f0;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  #s2-tagline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 300;
+    font-size: 34px;
+    color: rgba(232,232,240,0.65);
+    line-height: 1.4;
+  }
+  #s2-caps-rule { width: 60px; height: 3px; background: #7c3aed; }
+  .s2-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .s2-bullet {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: rgba(232,232,240,0.85);
+    opacity: 0;
+  }
+  .s2-bullet-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #00d4ff;
+    flex-shrink: 0;
+  }
+
+  /* ─────────────────────────────────── */
+  /* SCENE 3: DOES ARCHITECTURE 10–28s  */
+  /* ─────────────────────────────────── */
+  #s3 { z-index: 3; background: #080810; opacity: 0; }
+
+  #s3-glow-top {
+    width: 1200px; height: 400px;
+    top: -100px; left: 360px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.1) 0%, transparent 70%);
+  }
+  #s3-ghost-text {
+    position: absolute;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 300px;
+    color: rgba(0,212,255,0.03);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -48%);
+    letter-spacing: 0.1em;
+    user-select: none;
+  }
+
+  .s3-content {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    padding: 80px 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  #s3-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    letter-spacing: 0.4em;
+    color: rgba(0,212,255,0.7);
+    text-transform: uppercase;
+  }
+  #s3-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 90px;
+    color: #e8e8f0;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .does-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    flex: 1;
+  }
+  .does-layer {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 28px 36px;
+    background: rgba(17,17,33,0.8);
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+    opacity: 0;
+    flex: 1;
+  }
+  #layer-d { border-left-color: #00d4ff; }
+  #layer-o { border-left-color: #7c3aed; }
+  #layer-e { border-left-color: #22c55e; }
+  #layer-s { border-left-color: #f59e0b; }
+
+  .does-letter {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 72px;
+    line-height: 1;
+    width: 80px;
+    flex-shrink: 0;
+  }
+  #layer-d .does-letter { color: #00d4ff; }
+  #layer-o .does-letter { color: #7c3aed; }
+  #layer-e .does-letter { color: #22c55e; }
+  #layer-s .does-letter { color: #f59e0b; }
+
+  .does-sep {
+    width: 2px; height: 60px;
+    background: rgba(232,232,240,0.15);
+    flex-shrink: 0;
+  }
+  .does-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 34px;
+    color: #e8e8f0;
+    width: 280px;
+    flex-shrink: 0;
+  }
+  .does-desc {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 300;
+    font-size: 26px;
+    color: rgba(232,232,240,0.6);
+    line-height: 1.4;
+  }
+  .does-tag {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    padding: 6px 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  #layer-d .does-tag { color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
+  #layer-o .does-tag { color: #7c3aed; border: 1px solid rgba(124,58,237,0.3); }
+  #layer-e .does-tag { color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+  #layer-s .does-tag { color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+
+  /* ───────────────────────────────── */
+  /* SCENE 4: VS CODE DEMO  28–42s    */
+  /* ───────────────────────────────── */
+  #s4 { z-index: 4; background: #080810; opacity: 0; }
+
+  #s4-glow {
+    width: 1000px; height: 600px;
+    top: 200px; left: 460px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, transparent 70%);
+  }
+
+  .s4-content {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    padding: 60px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  #s4-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    letter-spacing: 0.3em;
+    color: rgba(0,212,255,0.7);
+    text-transform: uppercase;
+  }
+  /* VSCode window */
+  #vscode-window {
+    flex: 1;
+    background: #1e1e2e;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #vscode-titlebar {
+    height: 40px;
+    background: #16161e;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .vsc-dot { width: 14px; height: 14px; border-radius: 50%; }
+  .vsc-red { background: #ff5f57; }
+  .vsc-yellow { background: #febc2e; }
+  .vsc-green { background: #28c840; }
+  #vscode-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: rgba(232,232,240,0.6);
+    margin-left: 16px;
+  }
+  #vscode-live-badge {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: #22c55e;
+  }
+  .live-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+
+  #vscode-body {
+    flex: 1;
+    display: flex;
+  }
+  /* Sidebar */
+  #vscode-sidebar {
+    width: 240px;
+    background: #181825;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .sidebar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: rgba(232,232,240,0.35);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .sidebar-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: rgba(232,232,240,0.55);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sidebar-item.active { background: rgba(0,212,255,0.1); color: #00d4ff; }
+  .sidebar-icon { font-size: 14px; }
+
+  /* Editor + Chat split */
+  #vscode-editor {
+    flex: 1;
+    display: flex;
+    gap: 0;
+  }
+  #vscode-code-panel {
+    flex: 1;
+    padding: 32px 36px;
+    overflow: hidden;
+  }
+  .code-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: rgba(232,232,240,0.4);
+    line-height: 1.7;
+    white-space: pre;
+  }
+  .code-line.hl { color: rgba(232,232,240,0.75); }
+  .code-kw { color: #7c3aed; }
+  .code-str { color: #22c55e; }
+  .code-cmt { color: rgba(232,232,240,0.3); font-style: italic; }
+  .code-blue { color: #00d4ff; }
+
+  /* Chat panel */
+  #vscode-chat-panel {
+    width: 520px;
+    background: #13131f;
+    border-left: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  #chat-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: rgba(0,212,255,0.8);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+  #chat-messages {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+  }
+  .chat-msg {
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .chat-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .chat-avatar.user { background: rgba(124,58,237,0.4); color: #e8e8f0; }
+  .chat-avatar.ai { background: radial-gradient(135deg,#7c3aed,#00d4ff); color: #080810; }
+  .chat-bubble {
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    line-height: 1.5;
+    max-width: 400px;
+  }
+  .chat-bubble.user { background: rgba(124,58,237,0.18); color: rgba(232,232,240,0.9); }
+  .chat-bubble.ai { background: rgba(0,212,255,0.08); color: rgba(232,232,240,0.85); border: 1px solid rgba(0,212,255,0.15); }
+  #chat-typing {
+    display: flex; gap: 6px; align-items: center;
+    padding: 0 4px;
+  }
+  .typing-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #00d4ff;
+  }
+  #chat-input-area {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  #chat-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: rgba(232,232,240,0.7);
+    caret-color: #00d4ff;
+  }
+  /* typing cursor blink on chat */
+  #cursor-blink {
+    display: inline-block;
+    width: 2px; height: 22px;
+    background: #00d4ff;
+    margin-left: 2px;
+    vertical-align: middle;
+  }
+
+  /* ───────────────────────────────── */
+  /* SCENE 5: AGENT GRID  42–56s      */
+  /* ───────────────────────────────── */
+  #s5 { z-index: 5; background: #080810; opacity: 0; }
+
+  #s5-glow {
+    width: 1400px; height: 600px;
+    top: 200px; left: 260px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 70%);
+  }
+
+  .s5-content {
+    position: absolute;
+    inset: 0;
+    padding: 70px 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  #s5-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 80px;
+    color: #e8e8f0;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  #s5-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    letter-spacing: 0.35em;
+    color: rgba(0,212,255,0.7);
+    text-transform: uppercase;
+    margin-bottom: -20px;
+  }
+
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    flex: 1;
+  }
+  .agent-card {
+    background: #111121;
+    border-radius: 12px;
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-top: 3px solid transparent;
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, var(--glow-color), transparent 70%);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  #card-email { border-top-color: #00d4ff; --glow-color: rgba(0,212,255,0.3); }
+  #card-clase { border-top-color: #7c3aed; --glow-color: rgba(124,58,237,0.3); }
+  #card-admin { border-top-color: #22c55e; --glow-color: rgba(34,197,94,0.3); }
+  #card-video { border-top-color: #f59e0b; --glow-color: rgba(245,158,11,0.3); }
+  #card-amalia { border-top-color: #00d4ff; --glow-color: rgba(0,212,255,0.3); }
+  #card-ricky { border-top-color: #7c3aed; --glow-color: rgba(124,58,237,0.3); }
+
+  .agent-icon { font-size: 40px; line-height: 1; }
+  .agent-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: #e8e8f0;
+  }
+  .agent-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: rgba(232,232,240,0.5);
+  }
+  .agent-tag {
+    margin-top: auto;
+    align-self: flex-start;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    padding: 5px 14px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    color: rgba(232,232,240,0.4);
+    letter-spacing: 0.05em;
+  }
+
+  /* ───────────────────────────────── */
+  /* SCENE 6: SKILLS TICKER  56–68s   */
+  /* ───────────────────────────────── */
+  #s6 { z-index: 6; background: #080810; opacity: 0; }
+
+  #s6-bg-gradient {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0,212,255,0.08) 0%, rgba(124,58,237,0.06) 50%, transparent 80%);
+  }
+  #s6-grid { }
+
+  .s6-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    padding: 80px 160px;
+  }
+  #s6-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    letter-spacing: 0.35em;
+    color: rgba(0,212,255,0.7);
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  #s6-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 100px;
+    color: #e8e8f0;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    align-self: flex-start;
+  }
+  #s6-rule {
+    width: 0;
+    height: 3px;
+    background: #7c3aed;
+    align-self: flex-start;
+  }
+  .skills-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .skill-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    padding: 12px 28px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.1);
+    color: rgba(232,232,240,0.75);
+    background: rgba(17,17,33,0.8);
+    opacity: 0;
+    white-space: nowrap;
+  }
+  #s6-stat {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 300;
+    font-size: 32px;
+    color: rgba(232,232,240,0.5);
+    letter-spacing: 0.05em;
+    align-self: flex-start;
+  }
+  #s6-stat strong {
+    color: #00d4ff;
+    font-weight: 700;
+  }
+
+  /* ─────────────────────────── */
+  /* SCENE 7: OUTRO  68–75s     */
+  /* ─────────────────────────── */
+  #s7 { z-index: 7; background: #080810; opacity: 0; }
+
+  #s7-glow {
+    width: 900px; height: 900px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, rgba(0,212,255,0.14) 0%, rgba(124,58,237,0.1) 40%, transparent 70%);
+  }
+
+  .s7-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+  #s7-brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 180px;
+    color: #e8e8f0;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  #s7-rule {
+    width: 0;
+    height: 3px;
+    background: #00d4ff;
+  }
+  #s7-tagline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 300;
+    font-size: 40px;
+    color: rgba(232,232,240,0.65);
+    letter-spacing: 0.08em;
+  }
+  #s7-contact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: rgba(0,212,255,0.7);
+    letter-spacing: 0.15em;
+  }
+  #s7-overlay {
+    position: absolute;
+    inset: 0;
+    background: #080810;
+  }
+</style>
+</head>
+<body>
+
+<!-- ROOT COMPOSITION -->
+<div id="root" data-composition-id="jeffrey-demo" data-width="1920" data-height="1080" data-start="0" data-duration="75">
+
+  <!-- ── SCENE 1: INTRO ── -->
+  <div id="s1" class="scene">
+    <div id="s1-glow1" class="radial-glow"></div>
+    <div id="s1-glow2" class="radial-glow"></div>
+    <div class="grid-bg"></div>
+    <div id="s1-ghost">EVOLVE</div>
+    <div class="s1-content">
+      <div id="s1-label">Sistema Agentico</div>
+      <div id="s1-title">EVOLVE</div>
+      <div id="s1-rule"></div>
+      <div id="s1-sub">Operaciones Inteligentes</div>
+    </div>
+    <div id="s1-badge">powered by Jeffrey v1.0</div>
+  </div>
+
+  <!-- ── SCENE 2: JEFFREY IDENTITY ── -->
+  <div id="s2" class="scene">
+    <div id="s2-glow-left" class="radial-glow"></div>
+    <div id="s2-glow-right" class="radial-glow"></div>
+    <div class="grid-bg"></div>
+    <div id="s2-divider"></div>
+    <div class="s2-left">
+      <div id="s2-avatar-ring">
+        <div id="s2-orbit"></div>
+        <div id="s2-avatar-inner">J</div>
+      </div>
+    </div>
+    <div class="s2-right">
+      <div id="s2-eyebrow">Asistente Principal</div>
+      <div id="s2-name">Jeffrey</div>
+      <div id="s2-tagline">Gestión de operaciones<br>sin fricción, sin rodeos.</div>
+      <div id="s2-caps-rule"></div>
+      <div class="s2-bullets">
+        <div class="s2-bullet" id="b1"><div class="s2-bullet-dot"></div>Email &amp; comunicación</div>
+        <div class="s2-bullet" id="b2"><div class="s2-bullet-dot"></div>Agenda &amp; planificación</div>
+        <div class="s2-bullet" id="b3"><div class="s2-bullet-dot"></div>Formación &amp; clases</div>
+        <div class="s2-bullet" id="b4"><div class="s2-bullet-dot"></div>Producción de vídeo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 3: DOES ARCHITECTURE ── -->
+  <div id="s3" class="scene">
+    <div id="s3-glow-top" class="radial-glow"></div>
+    <div class="grid-bg"></div>
+    <div id="s3-ghost-text">DOES</div>
+    <div class="s3-content">
+      <div id="s3-eyebrow">Arquitectura del sistema</div>
+      <div id="s3-title">DOES</div>
+      <div class="does-layers">
+        <div class="does-layer" id="layer-d">
+          <div class="does-letter">D</div>
+          <div class="does-sep"></div>
+          <div class="does-name">Directives</div>
+          <div class="does-desc">SOPs en Markdown. El "qué" de cada tarea — objetivo, inputs, edge cases.</div>
+          <div class="does-tag">el qué</div>
+        </div>
+        <div class="does-layer" id="layer-o">
+          <div class="does-letter">O</div>
+          <div class="does-sep"></div>
+          <div class="does-name">Orchestration</div>
+          <div class="does-desc">Jeffrey lee las directivas y decide el orden de ejecución. Sin improvisación.</div>
+          <div class="does-tag">las decisiones</div>
+        </div>
+        <div class="does-layer" id="layer-e">
+          <div class="does-letter">E</div>
+          <div class="does-sep"></div>
+          <div class="does-name">Execution</div>
+          <div class="does-desc">Scripts Python deterministas. Credenciales en .env — nunca en el código.</div>
+          <div class="does-tag">el cómo</div>
+        </div>
+        <div class="does-layer" id="layer-s">
+          <div class="does-letter">S</div>
+          <div class="does-sep"></div>
+          <div class="does-name">Skills</div>
+          <div class="does-desc">11 capacidades especializadas por dominio. Activación automática por contexto.</div>
+          <div class="does-tag">las capacidades</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 4: VSCODE DEMO ── -->
+  <div id="s4" class="scene">
+    <div id="s4-glow" class="radial-glow"></div>
+    <div class="grid-bg"></div>
+    <div class="s4-content">
+      <div id="s4-label">Jeffrey en acción · Claude Code · VS Code</div>
+      <div id="vscode-window">
+        <div id="vscode-titlebar">
+          <div class="vsc-dot vsc-red"></div>
+          <div class="vsc-dot vsc-yellow"></div>
+          <div class="vsc-dot vsc-green"></div>
+          <div id="vscode-filename">CLAUDE.md — Mi Startup</div>
+          <div id="vscode-live-badge">
+            <div class="live-dot" id="live-pulse"></div>
+            Jeffrey LIVE
+          </div>
+        </div>
+        <div id="vscode-body">
+          <div id="vscode-sidebar">
+            <div class="sidebar-label">Explorador</div>
+            <div class="sidebar-item active"><span class="sidebar-icon">📁</span> directives/</div>
+            <div class="sidebar-item"><span class="sidebar-icon">📁</span> skills/</div>
+            <div class="sidebar-item"><span class="sidebar-icon">📁</span> agents/</div>
+            <div class="sidebar-item"><span class="sidebar-icon">📁</span> memory/</div>
+            <div class="sidebar-item"><span class="sidebar-icon">📁</span> execution/</div>
+            <div class="sidebar-item"><span class="sidebar-icon">📄</span> CLAUDE.md</div>
+          </div>
+          <div id="vscode-editor">
+            <div id="vscode-code-panel">
+              <div class="code-line"><span class="code-cmt"># CLAUDE.md</span></div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line hl"><span class="code-kw">## Identidad</span></div>
+              <div class="code-line">Eres <span class="code-blue">Jeffrey</span>, el asistente principal de <span class="code-str">Evolve</span>.</div>
+              <div class="code-line">Tu propósito: <span class="code-blue">gestionar operaciones</span> diarias.</div>
+              <div class="code-line">&nbsp;</div>
+              <div class="code-line hl"><span class="code-kw">## Arquitectura DOES</span></div>
+              <div class="code-line"><span class="code-blue">D</span> — Directives &nbsp;<span class="code-cmt">← el qué</span></div>
+              <div class="code-line"><span class="code-kw">O</span> — Orchestration <span class="code-cmt">← las decisiones</span></div>
+              <div class="code-line"><span class="code-str">E</span> — Execution &nbsp;&nbsp;<span class="code-cmt">← el cómo</span></div>
+              <div class="code-line" style="color:#f59e0b;">S — Skills &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-cmt">← las capacidades</span></div>
+            </div>
+            <div id="vscode-chat-panel">
+              <div id="chat-header">◈ Jeffrey · Claude Code</div>
+              <div id="chat-messages">
+                <div class="chat-msg" id="msg-user">
+                  <div class="chat-avatar user">JV</div>
+                  <div class="chat-bubble user" id="user-text"></div>
+                </div>
+                <div class="chat-msg" id="msg-thinking" style="opacity:0;">
+                  <div class="chat-avatar ai">J</div>
+                  <div id="chat-typing">
+                    <div class="typing-dot" id="td1"></div>
+                    <div class="typing-dot" id="td2"></div>
+                    <div class="typing-dot" id="td3"></div>
+                  </div>
+                </div>
+                <div class="chat-msg" id="msg-ai" style="opacity:0;">
+                  <div class="chat-avatar ai">J</div>
+                  <div class="chat-bubble ai" id="ai-text"></div>
+                </div>
+              </div>
+              <div id="chat-input-area">
+                <div id="chat-input">_</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 5: AGENT GRID ── -->
+  <div id="s5" class="scene">
+    <div id="s5-glow" class="radial-glow"></div>
+    <div class="grid-bg"></div>
+    <div class="s5-content">
+      <div id="s5-eyebrow">Perfiles de agente</div>
+      <div id="s5-title">Agentes especializados</div>
+      <div class="agents-grid">
+        <div class="agent-card" id="card-email">
+          <div class="agent-icon">✉️</div>
+          <div class="agent-name">email_agent</div>
+          <div class="agent-role">Comunicación externa e interna</div>
+          <div class="agent-tag">gmail · redacción</div>
+        </div>
+        <div class="agent-card" id="card-clase">
+          <div class="agent-icon">🎓</div>
+          <div class="agent-name">clase_agent</div>
+          <div class="agent-role">Formación y preparación de sesiones</div>
+          <div class="agent-tag">máster · módulo agentes</div>
+        </div>
+        <div class="agent-card" id="card-admin">
+          <div class="agent-icon">📅</div>
+          <div class="agent-name">admin_agent</div>
+          <div class="agent-role">Agenda, operaciones diarias</div>
+          <div class="agent-tag">calendar · planificación</div>
+        </div>
+        <div class="agent-card" id="card-video">
+          <div class="agent-icon">🎬</div>
+          <div class="agent-name">video_agent</div>
+          <div class="agent-role">Producción de vídeo para redes</div>
+          <div class="agent-tag">hyperframes · MP4</div>
+        </div>
+        <div class="agent-card" id="card-amalia">
+          <div class="agent-icon">📚</div>
+          <div class="agent-name">Amalia</div>
+          <div class="agent-role">Vault Obsidian — ingest, query, lint</div>
+          <div class="agent-tag">[DELEGATE:bibliotecaria]</div>
+        </div>
+        <div class="agent-card" id="card-ricky">
+          <div class="agent-icon">✅</div>
+          <div class="agent-name">Ricky</div>
+          <div class="agent-role">ClickUp — tareas, proyectos, reportes</div>
+          <div class="agent-tag">[DELEGATE:ricky]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 6: SKILLS TICKER ── -->
+  <div id="s6" class="scene">
+    <div class="grid-bg"></div>
+    <div id="s6-bg-gradient"></div>
+    <div class="s6-content">
+      <div id="s6-eyebrow">Capacidades activas</div>
+      <div id="s6-title">11 Skills</div>
+      <div id="s6-rule"></div>
+      <div class="skills-row">
+        <div class="skill-pill" id="sp1">email</div>
+        <div class="skill-pill" id="sp2">calendario</div>
+        <div class="skill-pill" id="sp3">clase</div>
+        <div class="skill-pill" id="sp4">research</div>
+        <div class="skill-pill" id="sp5">wiki</div>
+        <div class="skill-pill" id="sp6">consejo</div>
+        <div class="skill-pill" id="sp7">bibliotecaria</div>
+        <div class="skill-pill" id="sp8">video</div>
+        <div class="skill-pill" id="sp9">pm</div>
+        <div class="skill-pill" id="sp10">crear-agente</div>
+        <div class="skill-pill" id="sp11">trim</div>
+      </div>
+      <div id="s6-stat">Activación automática por contexto · <strong>siempre ampliables</strong></div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 7: OUTRO ── -->
+  <div id="s7" class="scene">
+    <div id="s7-glow" class="radial-glow"></div>
+    <div class="grid-bg"></div>
+    <div class="s7-content">
+      <div id="s7-brand">EVOLVE</div>
+      <div id="s7-rule"></div>
+      <div id="s7-tagline">Operaciones inteligentes. Sin fricción.</div>
+      <div id="s7-contact">iagen@evolve.es</div>
+    </div>
+    <div id="s7-overlay"></div>
+  </div>
+
+</div><!-- /root -->
+
+<script>
+(function () {
+  // Seeded PRNG (mulberry32) for deterministic pseudo-random
+  function mulberry32(seed) {
+    return function() {
+      var t = seed += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  // ─── HELPERS ───
+  // Typewriter text (uses tl positions, deterministic via fixed step count)
+  function typewriterTween(tl, el, text, startTime, totalDuration) {
+    el.textContent = '';
+    var chars = text.split('');
+    var stepDur = totalDuration / chars.length;
+    chars.forEach(function(ch, i) {
+      tl.call(function(c){ return function(){ el.textContent += c; }; }(ch), [], startTime + i * stepDur);
+    });
+  }
+
+  // ════════════════════════════
+  // SCENE 1: INTRO  0 – 4s
+  // ════════════════════════════
+  // Ghost breathe (one slow push within 3.5s scene window)
+  tl.to('#s1-ghost', { scale: 1.04, duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: 0 }, 0);
+  // Glows pulse — duration 1.5 * 2 cycles = 3.0s, fits before T12=3.5
+  tl.to('#s1-glow1', { scale: 1.08, duration: 1.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 0);
+  tl.to('#s1-glow2', { scale: 1.12, duration: 1.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 0.3);
+
+  // Label slides in
+  tl.fromTo('#s1-label', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'expo.out' }, 0.2);
+  // Title slams
+  tl.fromTo('#s1-title', { y: 60, opacity: 0, scale: 0.92 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out' }, 0.5);
+  // Rule expands
+  tl.fromTo('#s1-rule', { width: 0 }, { width: 220, duration: 0.5, ease: 'power3.out' }, 0.9);
+  // Sub fades
+  tl.fromTo('#s1-sub', { opacity: 0, letterSpacing: '0.2em' }, { opacity: 1, letterSpacing: '0.06em', duration: 0.6, ease: 'power2.out' }, 1.1);
+  // Badge creeps in
+  tl.fromTo('#s1-badge', { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, ease: 'sine.out' }, 1.4);
+
+  // ── TRANSITION S1 → S2 at t=3.5 ──
+  var T12 = 3.5;
+  tl.to('#s1', { filter: 'blur(10px)', scale: 1.03, opacity: 0, duration: 0.5, ease: 'power2.inOut' }, T12);
+  tl.fromTo('#s2', { filter: 'blur(10px)', scale: 0.97, opacity: 0 }, { filter: 'blur(0px)', scale: 1, opacity: 1, duration: 0.5, ease: 'power2.inOut' }, T12 + 0.1);
+
+  // ════════════════════════════
+  // SCENE 2: JEFFREY  4 – 10s
+  // ════════════════════════════
+  var s2 = 4.0;
+  // Divider line draws down
+  tl.fromTo('#s2-divider', { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: 'power3.out' }, s2 + 0.1);
+  // Avatar ring scales in
+  tl.fromTo('#s2-avatar-ring', { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(1.6)' }, s2 + 0.2);
+  // Orbit rotates — one rotation over 5.5s window (scene ends at T23=9.5, s2=4.0)
+  tl.to('#s2-orbit', { rotation: 360, duration: 5.5, ease: 'none', repeat: 0 }, s2);
+  // Avatar inner pulses — 1.2 * (1+1) = 2.4s, fits in window
+  tl.to('#s2-avatar-inner', { scale: 1.05, duration: 1.2, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s2 + 0.5);
+
+  // Right panel text
+  tl.fromTo('#s2-eyebrow', { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }, s2 + 0.3);
+  tl.fromTo('#s2-name', { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }, s2 + 0.45);
+  tl.fromTo('#s2-tagline', { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, s2 + 0.65);
+  tl.fromTo('#s2-caps-rule', { width: 0 }, { width: 60, duration: 0.4, ease: 'power3.out' }, s2 + 0.9);
+
+  // Bullets cascade
+  ['#b1','#b2','#b3','#b4'].forEach(function(sel, i) {
+    tl.fromTo(sel, { x: -20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: 'expo.out' }, s2 + 1.1 + i * 0.18);
+  });
+
+  // Glow pulse — 2.5*(1+1)=5s fits, starts at s2=4.0, ends at 9.0 < T23=9.5 ✓
+  tl.to('#s2-glow-left', { scale: 1.1, duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s2);
+  tl.to('#s2-glow-right', { scale: 1.15, duration: 2.2, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s2 + 0.5);
+
+  // ── TRANSITION S2 → S3 at t=9.5 (velocity upward push) ──
+  var T23 = 9.5;
+  tl.to('#s2', { y: -150, filter: 'blur(10px)', opacity: 0, duration: 0.45, ease: 'power3.in' }, T23);
+  tl.fromTo('#s3', { y: 150, filter: 'blur(10px)', opacity: 0 }, { y: 0, filter: 'blur(0px)', opacity: 1, duration: 0.6, ease: 'power3.out' }, T23 + 0.05);
+
+  // ════════════════════════════
+  // SCENE 3: DOES  10 – 28s
+  // ════════════════════════════
+  var s3 = 10.1;
+  tl.fromTo('#s3-eyebrow', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, s3);
+  tl.fromTo('#s3-title', { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }, s3 + 0.15);
+
+  // Ghost breathe
+  tl.to('#s3-ghost-text', { scale: 1.06, duration: 8, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s3);
+  tl.to('#s3-glow-top', { scale: 1.12, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s3 + 0.2);
+
+  // D, O, E, S layers slide in with stagger
+  [['#layer-d', s3+0.6], ['#layer-o', s3+1.2], ['#layer-e', s3+1.8], ['#layer-s', s3+2.4]].forEach(function(pair) {
+    tl.fromTo(pair[0], { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: 'expo.out' }, pair[1]);
+  });
+
+  // Layer glow pulse — repeat:1 (2 cycles) to stay within T34=27.5
+  // layer-s: s3+7=17.1, 3.5*2=7s, ends 24.1 < 27.5 ✓
+  tl.to('#layer-d', { backgroundColor: 'rgba(0,212,255,0.07)', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s3 + 4);
+  tl.to('#layer-o', { backgroundColor: 'rgba(124,58,237,0.07)', duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s3 + 5);
+  tl.to('#layer-e', { backgroundColor: 'rgba(34,197,94,0.07)', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s3 + 6);
+  tl.to('#layer-s', { backgroundColor: 'rgba(245,158,11,0.07)', duration: 3.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s3 + 7);
+
+  // ── TRANSITION S3 → S4 at t=27.5 ──
+  var T34 = 27.5;
+  tl.to('#s3', { filter: 'blur(12px)', scale: 1.04, opacity: 0, duration: 0.5, ease: 'power2.inOut' }, T34);
+  tl.fromTo('#s4', { filter: 'blur(12px)', scale: 0.96, opacity: 0 }, { filter: 'blur(0px)', scale: 1, opacity: 1, duration: 0.55, ease: 'power2.inOut' }, T34 + 0.1);
+
+  // ════════════════════════════
+  // SCENE 4: DEMO  28 – 42s
+  // ════════════════════════════
+  var s4 = 28.1;
+  tl.fromTo('#s4-label', { opacity: 0, y: -15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, s4);
+  tl.fromTo('#vscode-window', { y: 40, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out' }, s4 + 0.2);
+  tl.fromTo('#vscode-sidebar', { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }, s4 + 0.5);
+  tl.fromTo('#vscode-code-panel', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, s4 + 0.65);
+  tl.fromTo('#vscode-chat-panel', { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'expo.out' }, s4 + 0.8);
+
+  // Live dot pulse — window 13.4s, duration 0.8, yoyo: Math.floor(13.4/0.8)-1=15
+  tl.to('#live-pulse', { scale: 1.4, opacity: 0.4, duration: 0.8, ease: 'sine.inOut', yoyo: true, repeat: 15 }, s4);
+
+  // Glow pulse ambient
+  tl.to('#s4-glow', { scale: 1.15, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s4);
+
+  // Typewriter: user message
+  var userMsg = 'Prepara el resumen de la sesión de hoy';
+  typewriterTween(tl, document.getElementById('user-text'), userMsg, s4 + 1.4, 2.0);
+
+  // Show thinking dots
+  tl.fromTo('#msg-thinking', { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, s4 + 3.6);
+  tl.to('#td1', { y: -6, duration: 0.3, ease: 'power2.out', yoyo: true, repeat: 5 }, s4 + 3.8);
+  tl.to('#td2', { y: -6, duration: 0.3, ease: 'power2.out', yoyo: true, repeat: 5 }, s4 + 3.95);
+  tl.to('#td3', { y: -6, duration: 0.3, ease: 'power2.out', yoyo: true, repeat: 5 }, s4 + 4.1);
+  tl.to('#msg-thinking', { opacity: 0, duration: 0.2 }, s4 + 5.8);
+
+  // Show AI response
+  tl.fromTo('#msg-ai', { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' }, s4 + 6.0);
+  var aiMsg = 'Leyendo memoria... ✓\nActivando clase_agent...\nResumen listo en .tmp/sesion.md';
+  typewriterTween(tl, document.getElementById('ai-text'), aiMsg, s4 + 6.2, 3.5);
+
+  // Cursor blink — 0.5*(13+1)=7s, fits in 13.4s window
+  tl.to('#chat-input', { borderColor: 'rgba(0,212,255,0.6)', duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 13 }, s4);
+
+  // ── TRANSITION S4 → S5 at t=41.5 ──
+  var T45 = 41.5;
+  tl.to('#s4', { opacity: 0, filter: 'blur(8px)', duration: 0.4, ease: 'power2.inOut' }, T45);
+  tl.fromTo('#s5', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out', immediateRender: false, overwrite: 'auto' }, T45 + 0.15);
+
+  // ════════════════════════════
+  // SCENE 5: AGENTS  42 – 56s
+  // ════════════════════════════
+  var s5 = 42.0;
+  tl.fromTo('#s5-eyebrow', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, s5 + 0.1);
+  tl.fromTo('#s5-title', { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: 'expo.out' }, s5 + 0.25);
+
+  // Glow pulse
+  tl.to('#s5-glow', { scale: 1.1, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s5);
+
+  // Cards cascade — 3D card flip entrance
+  var cards = ['#card-email','#card-clase','#card-admin','#card-video','#card-amalia','#card-ricky'];
+  cards.forEach(function(sel, i) {
+    var row = Math.floor(i / 3);
+    var col = i % 3;
+    tl.fromTo(sel,
+      { rotateY: -90, opacity: 0, transformOrigin: 'left center' },
+      { rotateY: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.4)' },
+      s5 + 0.6 + row * 0.5 + col * 0.15
+    );
+  });
+
+  // Card hover pulse — repeat:1 so worst case i=5: 3.5*2=7s, starts at 46, ends 53 < T56=55.5 ✓
+  cards.forEach(function(sel, i) {
+    tl.to(sel, { y: -4, duration: 2 + i * 0.3, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s5 + 2 + i * 0.4);
+  });
+
+  // ── TRANSITION S5 → S6 at t=55.5 ──
+  var T56 = 55.5;
+  tl.to('#s5', { y: -100, filter: 'blur(8px)', opacity: 0, duration: 0.4, ease: 'power3.in', overwrite: 'auto' }, T56);
+  tl.fromTo('#s6', { y: 100, filter: 'blur(8px)', opacity: 0 }, { y: 0, filter: 'blur(0px)', opacity: 1, duration: 0.5, ease: 'power3.out' }, T56 + 0.05);
+
+  // ════════════════════════════
+  // SCENE 6: SKILLS  56 – 68s
+  // ════════════════════════════
+  var s6 = 56.1;
+  tl.fromTo('#s6-eyebrow', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, s6);
+  tl.fromTo('#s6-title', { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }, s6 + 0.15);
+  tl.fromTo('#s6-rule', { width: 0 }, { width: 120, duration: 0.45, ease: 'power3.out' }, s6 + 0.5);
+  tl.fromTo('#s6-stat', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, s6 + 0.7);
+
+  // BG gradient breathe
+  tl.to('#s6-bg-gradient', { scale: 1.08, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s6);
+
+  // Pills pop in with stagger
+  for (var pi = 1; pi <= 11; pi++) {
+    tl.fromTo('#sp' + pi,
+      { scale: 0.7, opacity: 0, y: 20 },
+      { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.7)' },
+      s6 + 0.9 + (pi - 1) * 0.1
+    );
+  }
+
+  // Pill hover pulse (alternate colors)
+  var pillColors = ['#00d4ff','#7c3aed','#22c55e','#f59e0b'];
+  for (var pi2 = 1; pi2 <= 11; pi2++) {
+    var col = pillColors[(pi2 - 1) % 4];
+    tl.to('#sp' + pi2, {
+      borderColor: col,
+      color: col,
+      duration: 1.5,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: 2
+    }, s6 + 2 + (pi2 - 1) * 0.2);
+  }
+
+  // ── TRANSITION S6 → S7 at t=67.5 (color dip to black) ──
+  var T67 = 67.5;
+  tl.to('#s6', { opacity: 0, duration: 0.4, ease: 'power2.in' }, T67);
+  tl.fromTo('#s7', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' }, T67 + 0.3);
+
+  // ════════════════════════════
+  // SCENE 7: OUTRO  68 – 75s
+  // ════════════════════════════
+  var s7 = 67.9;
+  // Overlay initially covers, then fades out to reveal
+  tl.fromTo('#s7-overlay', { opacity: 1 }, { opacity: 0, duration: 0.8, ease: 'power2.out' }, s7);
+
+  tl.fromTo('#s7-brand', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: 'expo.out' }, s7 + 0.5);
+  tl.fromTo('#s7-rule', { width: 0 }, { width: 280, duration: 0.5, ease: 'power3.out' }, s7 + 1.0);
+  tl.fromTo('#s7-tagline', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'sine.out' }, s7 + 1.3);
+  tl.fromTo('#s7-contact', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, s7 + 2.0);
+
+  // Glow breathe — 2.5*(1+1)=5s, starts at 68.4, ends 73.4 < 74.2 ✓
+  tl.to('#s7-glow', { scale: 1.15, duration: 2.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, s7 + 0.5);
+
+  // Final fade to black at t=74
+  tl.to('#s7', { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 74.2);
+
+  // ── REGISTER ──
+  window.__timelines['jeffrey-demo'] = tl;
+
+})();
+</script>
+
+</body>
+</html>
