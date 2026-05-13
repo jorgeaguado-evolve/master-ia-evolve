@@ -428,6 +428,8 @@ const DATA = {
         { id: "hb-5", name: "Cierre semana (viernes)", status: "active", description: "Progreso del modulo X/10 y resumen de temas cubiertos" },
         { id: "hb-6", name: "Lint wiki (domingo)", status: "active", description: "Revision de salud del wiki e informe para el lunes" },
         { id: "hb-7", name: "Revision mensual", status: "active", description: "% avance del master, KPIs pedagogicos y ajustes de ritmo" },
+        { id: "hb-8", name: "Verificar backup GitHub", status: "active", description: "Revisar .tmp/backup_log.txt: alerta roja si mas de 24h sin backup o si contiene ERROR" },
+        { id: "hb-9", name: "Trim report silencioso", status: "active", description: "Ejecutar trim.py --solo-reporte y alertar en briefing si hay links rotos o candidatos criticos" },
       ]
     },
     {
@@ -477,6 +479,55 @@ const DATA = {
         { id: "exec-4", name: "Reportes automaticos", status: "planned", description: "Generar reportes periodicos de progreso del master y operaciones" },
       ]
     },
+    {
+      id: "video",
+      name: "Video",
+      subtitle: "Produccion",
+      status: "in-progress",
+      color: "#ff5722",
+      icon: "🎬",
+      description: "Produccion audiovisual con Hyperframes. Composiciones HTML-to-video para redes sociales. FFmpeg pendiente de instalar para render final.",
+      children: [
+        { id: "video-1", name: "Composicion HTML", status: "active", description: "Crear composicion animada con timing preciso en Hyperframes" },
+        { id: "video-2", name: "Video horizontal", status: "active", description: "Formato 1920x1080 para YouTube y LinkedIn" },
+        { id: "video-3", name: "Video vertical", status: "active", description: "Formato 1080x1920 para Reels y TikTok" },
+        { id: "video-4", name: "Captions + transcripcion", status: "active", description: "Sincronizar subtitulos con audio via Whisper" },
+        { id: "video-5", name: "Transiciones y efectos", status: "active", description: "Crossfade, wipe, shader y animaciones GSAP / Anime.js" },
+        { id: "video-6", name: "TTS / Narracion", status: "active", description: "Generar audio de narracion con text-to-speech" },
+        { id: "video-7", name: "Renderizar MP4", status: "in-progress", description: "Exportar MP4 final — requiere FFmpeg (pendiente de instalar)" },
+      ]
+    },
+    {
+      id: "consejo",
+      name: "Consejo",
+      subtitle: "Multi-Agente",
+      status: "active",
+      color: "#3f51b5",
+      icon: "⚖",
+      description: "Debate multi-agente secuencial con 4 roles fijos hasta consenso, seguido de sintesis con Opus. Para decisiones estrategicas complejas.",
+      children: [
+        { id: "consejo-1", name: "Debate multi-agente", status: "active", description: "4 agentes (Pragmatico, Critico, Visionario, Implementador) en rondas secuenciales" },
+        { id: "consejo-2", name: "Convergencia por consenso", status: "active", description: "Rondas 3-6 hasta que todos los agentes estan de acuerdo" },
+        { id: "consejo-3", name: "Sintesis Opus", status: "active", description: "Conclusion, ideas clave, plan de accion y riesgos con claude-opus-4-7" },
+        { id: "consejo-4", name: "Transcripcion completa", status: "active", description: "Output en .tmp/consejo_output.json con cada turno del debate" },
+      ]
+    },
+    {
+      id: "pm",
+      name: "PM / Ricky",
+      subtitle: "ClickUp",
+      status: "active",
+      color: "#8e44ad",
+      icon: "📋",
+      description: "Gestion del workspace de ClickUp. Ricky opera como agente independiente delegado por Jeffrey. Tareas, proyectos, estados y reportes.",
+      children: [
+        { id: "pm-1", name: "Ver tareas", status: "active", description: "Listar tareas pendientes de un proyecto o de todo el workspace" },
+        { id: "pm-2", name: "Crear tarea", status: "active", description: "Nueva tarea o lista en ClickUp con titulo, descripcion y prioridad" },
+        { id: "pm-3", name: "Actualizar tarea", status: "active", description: "Cambiar estado, prioridad o descripcion de una tarea existente" },
+        { id: "pm-4", name: "Reporte de estado", status: "active", description: "Resumen ejecutivo de todos los proyectos activos" },
+        { id: "pm-5", name: "Reorganizar workspace", status: "active", description: "Proponer o ejecutar reorganizacion de listas y proyectos" },
+      ]
+    },
   ]
 };
 
@@ -509,6 +560,32 @@ const SCHEDULED_TASKS = [
     skill: 'email',
     description: 'Draft de correo para iagen@evolve.es con tareas completadas, decisiones tomadas y pendientes del dia',
     output: 'Draft en Gmail: "Resumen del dia — [fecha]"',
+    status: 'active',
+  },
+  {
+    id: 'hb-daily-backup',
+    name: 'Verificar backup GitHub',
+    schedule: 'daily',
+    freq: 'diario',
+    time: 'Manana',
+    cronExpr: 'daily-morning',
+    agent: 'jeffrey',
+    skill: 'trim',
+    description: 'Revisar .tmp/backup_log.txt: si el ultimo registro tiene mas de 24h o contiene "ERROR", incluir en briefing como alerta roja con el mensaje exacto',
+    output: 'Alerta en briefing o confirmacion "Backup OK" si todo correcto',
+    status: 'active',
+  },
+  {
+    id: 'hb-daily-trim',
+    name: 'Trim report silencioso',
+    schedule: 'daily',
+    freq: 'diario',
+    time: 'Manana',
+    cronExpr: 'daily-morning',
+    agent: 'jeffrey',
+    skill: 'trim',
+    description: 'Ejecutar python execution/trim.py --solo-reporte (genera .tmp/trim_report.md sin modificar nada). Si hay links rotos o candidatos criticos: incluirlos en el briefing',
+    output: '.tmp/trim_report.md + alertas en briefing si hay problemas detectados',
     status: 'active',
   },
   {

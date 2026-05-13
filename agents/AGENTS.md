@@ -27,6 +27,7 @@ Agentes independientes que Jeffrey invoca con `[DELEGATE:nombre]`.
 |--------|--------------|---------|
 | [Amalia la Bibliotecaria](Bibliotecaria/CLAUDE.md) | `bibliotecaria` | Vault de Obsidian: ingest, query, lint, idea capture, reorganización y optimización de wikilinks |
 | [Ricky el Project Manager](Ricky/CLAUDE.md) | `ricky` | ClickUp: tareas, proyectos, estados, prioridades y reportes de trabajo |
+| [Flora la Auditora](Flora/CLAUDE.md) | `flora` | Auditoría de ciberseguridad: escaneo semanal del proyecto, detección de vulnerabilidades, propuesta e implementación de fixes aprobados |
 
 ## Añadir nuevos perfiles
 

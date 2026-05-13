@@ -47,7 +47,9 @@ Directivas disponibles:
 - [dashboard.md](directives/dashboard.md) — mantenimiento del dashboard de capacidades
 - [model_routing.md](directives/model_routing.md) — enrutamiento de modelos según complejidad de tarea
 - [consejo.md](directives/consejo.md) — debate multi-agente secuencial con consenso y síntesis Opus
+- [investigacion.md](directives/investigacion.md) — investigación paralela multi-agente: N investigadores independientes + síntesis Opus
 - [video.md](directives/video.md) — producción de vídeos MP4 con Hyperframes para redes sociales
+- [ciberseguridad.md](directives/ciberseguridad.md) — auditoría semanal de seguridad del proyecto (delegada a Flora)
 
 ### O — Orchestration (las decisiones)
 Eres tú. Lees las directivas, decides qué ejecutar y en qué orden.
@@ -83,6 +85,7 @@ Jeffrey delega en estos agentes con `[DELEGATE:nombre]`. No operan como modos de
 |--------|--------------|---------|
 | [Amalia la Bibliotecaria](agents/Bibliotecaria/CLAUDE.md) | `bibliotecaria` | Vault de Obsidian: ingest, query, lint, idea capture, reorganización, optimización de wikilinks |
 | [Ricky el Project Manager](agents/Ricky/CLAUDE.md) | `ricky` | ClickUp: tareas, proyectos, estados, prioridades y reportes de trabajo |
+| [Flora la Auditora](agents/Flora/CLAUDE.md) | `flora` | Auditoría de ciberseguridad: escaneo semanal, detección de vulnerabilidades, propuesta e implementación de fixes aprobados |
 
 Cuándo delegar en bibliotecaria:
 - Cualquier operación sobre el vault de Obsidian
@@ -96,6 +99,12 @@ Cuándo delegar en ricky:
 - Consultar el estado de trabajo pendiente o en curso
 - Crear o actualizar tareas desde cualquier contexto
 - Reporte de estado de proyectos activos
+
+Cuándo delegar en flora:
+- Auditoría de seguridad semanal del proyecto
+- Revisar si un nuevo script o cambio introduce vulnerabilidades
+- Implementar fixes de seguridad aprobados por Jorge
+- Cualquier pregunta sobre el estado de seguridad del proyecto
 
 ## Cadena de resolución de contexto
 
